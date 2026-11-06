@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TimeBack · Buy back your week</title>
+  <script>
+    // If the page isn't served by the TimeBack server, try node_modules, then the CDN.
+    function tbFallback(el) { const list = (el.dataset.fallbacks || '').split(' ').filter(Boolean); if (!list.length) return; el.dataset.fallbacks = list.slice(1).join(' '); el.href = list[0]; }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/vendor/ag-grid/styles/ag-grid.css" data-fallbacks="../node_modules/ag-grid-community/styles/ag-grid.css https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-grid.css" onerror="tbFallback(this)" />
+  <link rel="stylesheet" href="/vendor/ag-grid/styles/ag-theme-quartz.css" data-fallbacks="../node_modules/ag-grid-community/styles/ag-theme-quartz.css https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-theme-quartz.css" onerror="tbFallback(this)" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="grain"></div></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <header class="top">
+    <div class="brand"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></span> TimeBack</div>
+    <div class="badges" id="badges"></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-left">
+        <div class="eyebrow reveal"><span class="dot"></span>AI agent · hours per dollar · PayPal checkout</div>
+        <h1 class="reveal" style="--d:80ms">Buy back <span class="grad">your week.</span></h1>
+        <p class="sub reveal" style="--d:160ms">Tell TimeBack what's coming up and what you can spend. It picks the chores worth handing off, haggles for better prices, fits everything around your plans, and books it all with PayPal.</p>
+        <div class="ask reveal" style="--d:240ms">
+          <textarea id="prompt" rows="3" aria-label="Describe your week">I have two exams next week and $150. Help me free up as much time as possible. I'd like greener options if they're close in price, and I want to keep doing my own commute.</textarea>
+          <div class="ask-actions">
+            <div class="examples" id="examples"></div>
+            <button id="planBtn" class="primary">Plan my week</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hero-card reveal" style="--d:200ms" id="heroCard" aria-live="polite">
+        <div class="hc-top">
+          <span class="hc-label">Free time this week</span>
+          <span class="hc-tag" id="hcTag">Planning…</span>
+        </div>
+        <div class="hc-main">
+          <div class="ring">
+            <svg viewBox="0 0 120 120"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4ff0b0"/><stop offset="1" stop-color="#4ff0b0"/></linearGradient></defs>
+              <circle class="track" cx="60" cy="60" r="52" fill="none" stroke-width="10"/>
+              <circle class="prog" id="ringProg" cx="60" cy="60" r="52" fill="none" stroke-width="10" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+            <div class="ring-label"><div><b id="ringVal">0</b><span>hours back</span></div></div>
+          </div>
+          <div>
+            <div class="hc-big"><span id="hcBefore">--</span><span class="hc-unit">h</span><span class="hc-arrow">→</span><span id="hcAfter" class="hc-after">--</span><span class="hc-unit">h</span></div>
+            <div class="hc-delta" id="hcDelta">&nbsp;</div>
+          </div>
+        </div>
+        <div class="strip" id="strip"></div>
+        <div class="legend"><span><i class="lg busy"></i>Commitments</span><span><i class="lg chore"></i>Chores</span><span><i class="lg freed"></i>Bought back</span></div>
+        <ol class="steps" id="steps"></ol>
+      </aside>
+    </section>
+
+    <section id="results" class="hidden">
+      <div class="stats">
+        <div class="stat hero-stat reveal"><span class="label">Hours bought back</span><span class="value" id="statHours">0</span></div>
+        <div class="stat reveal" style="--d:80ms"><span class="label">Spent</span><span class="value" id="statSpent">$0</span><span class="hint" id="statBudget"></span></div>
+        <div class="stat reveal" style="--d:160ms"><span class="label">Minutes per dollar</span><span class="value" id="statRate">0</span></div>
+        <div class="stat reveal" style="--d:240ms"><span class="label">Saved by haggling</span><span class="value" id="statHaggle">$0</span></div>
+      </div>
+
+      <div class="agent-note reveal">
+        <div class="avatar">AI</div>
+        <div>
+          <div class="note-title">TimeBack's plan <span class="pill" id="sourcePill"></span></div>
+          <p id="explanation"></p>
+        </div>
+      </div>
+
+      <div class="panel reveal">
+        <div class="panel-head">
+          <div>
+            <h2>Your options</h2>
+            <p class="muted">Tick to lock an option in, untick to drop it. Change the budget and TimeBack re-plans instantly. Click <b>Haggle</b> to let your agent negotiate.</p>
+          </div>
+          <div class="controls">
+            <label class="budget">Budget $<input id="budgetInput" type="number" min="1" step="5" /></label>
+            <label class="toggle"><input type="checkbox" id="ecoToggle" /> Prefer eco</label>
+            <input id="quickFilter" type="search" placeholder="Filter…" aria-label="Filter options" />
+            <button id="resetBtn" class="ghost">Reset</button>
+          </div>
+        </div>
+        <div id="grid" class="ag-theme-quartz grid"></div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel reveal">
+          <h2>Your week</h2>
+          <p class="muted">Pink blocks are your fixed commitments. Dark green blocks are handled for you.</p>
+          <div id="week" class="week"></div>
+        </div>
+        <div class="panel checkout reveal" style="--d:120ms">
+          <h2>Book it</h2>
+          <div id="cart"></div>
+          <div id="paypal-buttons"></div>
+          <button id="demoPay" class="primary pay hidden">Pay with PayPal (demo mode)</button>
+          <div id="receipt" class="hidden"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="drawer" class="drawer hidden">
+    <div class="drawer-card">
+      <div class="drawer-head">
+        <h3 id="drawerTitle">Negotiating…</h3>
+        <button id="drawerClose" class="ghost">Close</button>
+      </div>
+      <div class="vs"><div class="side buyer">Your agent<b id="vsBuyer">–</b></div><span class="x">VS</span><div class="side seller"><span id="vsSellerName">Seller</span><b id="vsSeller">–</b></div></div>
+      <div id="chat" class="chat"></div>
+      <div id="dealSummary" class="deal"></div>
+    </div>
+  </div>
+
+  <footer>Sandbox demo. Providers are simulated merchants; payments run through PayPal's sandbox.</footer>
+
+  <script src="/vendor/ag-grid/dist/ag-grid-community.min.js"></script>
+  <script>
+    // Fallbacks when the page isn't served by the TimeBack server.
+    if (!window.agGrid) document.write('<script src="../node_modules/ag-grid-community/dist/ag-grid-community.min.js"><\/script>');
+  </script>
+  <script>
+    if (!window.agGrid) document.write('<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/dist/ag-grid-community.min.js"><\/script>');
+  </script>
+  <script src="shared/catalog.js"></script>
+  <script src="shared/optimizer.js"></script>
+  <script src="shared/negotiate.js"></script>
+  <script src="shared/engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
