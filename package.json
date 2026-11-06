@@ -1,0 +1,20 @@
+{
+  "name": "timeback",
+  "version": "0.1.0",
+  "description": "An AI agent that buys back your time: plans which chores to hand off, haggles with providers, and books them with PayPal.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "ag-grid-community": "^32.3.3",
+    "dotenv": "^18.0.9",
+    "express": "^4.22.3"
+  }
+}
