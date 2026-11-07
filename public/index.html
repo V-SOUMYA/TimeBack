@@ -191,11 +191,12 @@
         return { ...t, best, count: opts.length };
       });
       const player = document.getElementById('landingPlayer');
+      const tint = UI.zone(document.getElementById('services'));
       UI.coverflow(document.getElementById('landingFlow'), items, {
         start: 0,
         render: (it) => `${UI.art(it.category)}<div class="cf-meta"><b>${it.label}</b><span>${it.count} providers</span><span class="bars"><i></i><i></i><i></i><i></i><i></i></span></div>`,
         onFocus: (it) => {
-          UI.setPalette(it.category);
+          tint.set(it.category);
           const mpd = ((it.best.hoursSaved * 60) / it.best.price).toFixed(1);
           player.innerHTML = `<div class="thumb">${UI.art(it.category)}</div>
             <div class="info"><b>${it.best.provider}</b><span>Best for ${it.label.toLowerCase()} · saves ${it.best.hoursSaved}h · ${mpd} min per $</span>

@@ -86,7 +86,7 @@ async function init() {
     state.excluded.clear();
     replan(true);
   });
-  $('drawerClose').addEventListener('click', () => $('drawer').classList.add('hidden'));
+  $('drawerClose').addEventListener('click', () => { $('drawer').classList.add('hidden'); UI.refreshPalette(); });
   $('dayPills').addEventListener('click', onDayClick);
   $('weekBars').addEventListener('click', onDayClick);
   $('pickInfo').addEventListener('click', onPickAction);
@@ -109,7 +109,7 @@ async function plan({ auto = false } = {}) {
   btn.innerHTML = 'Planning… <span class="plus">⏱</span>';
   $('hcTag').textContent = 'Planning…';
   $('hcTag').className = 'tag busy';
-  UI.setPalette('plan');
+  if (!state.tint) state.tint = UI.zone($('picks').closest('.panel'));
   $('steps').innerHTML = '';
   $('results').classList.add('loading');
   $('hcAfter').dataset.v = 0;
@@ -511,7 +511,7 @@ function renderPicks(plan) {
     render: (r) => `${UI.art(categoryOf(r.task))}<div class="cf-meta"><b>${escapeHtml(r.taskLabel)}</b><span>${escapeHtml(r.provider)}</span><span class="bars"><i></i><i></i><i></i><i></i><i></i></span></div>`,
     onFocus: (r) => {
       state.pickId = r.id;
-      UI.setPalette(categoryOf(r.task));
+      state.tint.set(categoryOf(r.task));
       const share = Math.min(100, (r.hoursSaved / (r.selfHours || r.hoursSaved)) * 100);
       $('pickInfo').innerHTML = `<div class="thumb">${UI.art(categoryOf(r.task))}</div>
         <div class="info"><b>${escapeHtml(r.provider)}</b><span>${escapeHtml(r.taskLabel)} · ${escapeHtml(r.slotLabel)} · saves ${r.hoursSaved}h of ${r.selfHours}h · ${r.dealId ? `<s>${money(r.basePrice)}</s> ` : ''}${money(r.price)}</span>
@@ -580,7 +580,6 @@ async function demoCheckout() {
 
 function onBooked(result) {
   state.booked = true;
-  UI.setPalette('booked');
   render({ plan: state.plan });
   const chosen = state.plan.rows.filter((r) => ['Recommended', 'Booked'].includes(r.status));
   const booking = {

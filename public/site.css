@@ -14,7 +14,7 @@ body.page-leave main { animation: vtOut .25s ease both; }
 .eyebrow { display: inline-flex; gap: 8px; align-items: center; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 18px; }
 .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 10px var(--lime); }
 .l-hero h1 { font-size: clamp(46px, 6.6vw, 92px); line-height: .95; letter-spacing: -0.05em; margin: 0 0 20px; font-weight: 600; }
-.ombre-text { background: linear-gradient(100deg, #fff 0%, var(--p2) 45%, var(--lime) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ombre-text { background: linear-gradient(100deg, #fff 0%, #b9bcc6 45%, var(--lime) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .l-hero .sub { font-size: 18px; color: var(--ink-2); max-width: 500px; margin: 0 0 26px; }
 .ask { padding: 16px; border-radius: 24px; display: grid; gap: 12px; }
 .ask textarea { width: 100%; border: 0; resize: none; font: inherit; font-size: 15px; outline: none; background: transparent; color: #fff; }

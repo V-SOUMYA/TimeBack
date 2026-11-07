@@ -30,7 +30,7 @@ Built for *Build What's Next with PayPal and AI*.
 ## Design
 
 - **Ombre glass UI:** frosted glass cards over a smoky ombre backdrop, with color blooms inside the stat tiles.
-- **Dynamic palette:** each chore category (food, home, errands, travel, study) has its own palette. When a service is in focus in a carousel, the whole page background shifts to its colors.
+- **Dynamic palette:** pages start in black glass. Each chore category (grocery, food, home, errands, travel, study) has its own palette, and while a carousel is on screen the background takes on the colors of the service in focus, fading back to black when you scroll past.
 - **Dot-matrix numerals:** key numbers (free hours, money, ratios) are rendered as LED-style dot grids that morph between values.
 - **Coverflow carousels:** 3D card carousels for chores (Home), your picks (Planner) and your booked week (Booked), with a player-style detail bar.
 - **Instrument controls:** tick-ruler gauges with a marker, a draggable budget ruler, a live wave line, day pills and an on/off switch.

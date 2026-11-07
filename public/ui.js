@@ -7,6 +7,7 @@
   // Each category has an ombre palette. Setting it re-tints the page background
   // (CSS custom properties registered with @property animate smoothly).
   const PALETTES = {
+    noir: ['#4a4a52', '#2c2c32', '#0c0c0f'],
     grocery: ['#86bdf0', '#d4e9fc', '#2b5680'],
     food: ['#e2579b', '#f3a3c4', '#6d2a52'],
     home: ['#7fae8f', '#cfe4c9', '#2f5244'],
@@ -18,7 +19,7 @@
     booked: ['#4b66e6', '#7fe0c3', '#22306e'],
   };
   function setPalette(name) {
-    const p = PALETTES[name] || PALETTES.plan;
+    const p = PALETTES[name] || PALETTES.noir;
     const s = document.documentElement.style;
     s.setProperty('--p1', p[0]);
     s.setProperty('--p2', p[1]);
@@ -177,5 +178,23 @@
     el.style.setProperty('--f', Math.max(0.08, Math.min(0.95, frac)));
   }
 
-  root.TimeBackUI = { setPalette, dot, countDot, ruler, coverflow, art, icon, wave, PALETTES };
+  // ---------------- scroll-scoped palette ----------------
+  // Colors only show while a carousel's section is on screen; otherwise the
+  // page stays in black glass. zone(el).set(name) records the wanted palette.
+  const zones = [];
+  function applyZones() {
+    const live = zones.find((z) => z.visible && z.name);
+    setPalette(live ? live.name : 'noir');
+  }
+  function zone(el) {
+    const z = { el, visible: false, name: null, set(name) { z.name = name; applyZones(); } };
+    zones.push(z);
+    new IntersectionObserver((entries) => entries.forEach((en) => {
+      z.visible = en.isIntersecting;
+      applyZones();
+    }), { threshold: 0.35 }).observe(el);
+    return z;
+  }
+
+  root.TimeBackUI = { zone, refreshPalette: applyZones, setPalette, dot, countDot, ruler, coverflow, art, icon, wave, PALETTES };
 })(self);

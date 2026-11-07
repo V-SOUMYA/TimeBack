@@ -75,7 +75,7 @@
         $('booked').innerHTML = '<section class="booked-hero" style="padding:90px 0"><h1>No booking yet.</h1><p>Plan your week first, then book it with PayPal.</p><div class="b-actions"><a class="btn light" href="plan.html">Plan my week <span class="plus">+</span></a></div></section>';
         return;
       }
-      UI.setPalette('booked');
+      const tint = UI.zone(document.getElementById('bFlow').closest('.panel'));
       setTimeout(() => {
         UI.countDot($('bHours'), b.hoursSaved, (v) => v.toFixed(1), 1500);
         UI.countDot($('bSpent'), b.spent, (v) => `$${v.toFixed(0)}`, 1200);
@@ -88,7 +88,7 @@
       UI.coverflow($('bFlow'), b.items, {
         start: 0,
         render: (it) => `${UI.art(cat(it.task))}<div class="cf-meta"><b>${esc(it.task)}</b><span>${esc(it.when)} · +${it.hours}h</span><span class="bars"><i></i><i></i><i></i><i></i><i></i></span></div>`,
-        onFocus: (it) => UI.setPalette(cat(it.task)),
+        onFocus: (it) => tint.set(cat(it.task)),
       });
 
       $('bList').innerHTML = b.items.map((it, i) => `
