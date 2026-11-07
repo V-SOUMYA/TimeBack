@@ -10,10 +10,12 @@
   <link rel="stylesheet" href="site.css" />
 </head>
 <body>
-  <div class="aurora" aria-hidden="true"></div>
+  <div class="backdrop" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
   <div class="progress" aria-hidden="true"></div>
-  <header class="top">
-    <a class="brand" href="index.html"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></span> TimeBack</a>
+
+  <header class="top glass">
+    <a class="brand" href="index.html"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></span>TimeBack</a>
     <nav class="nav">
       <a href="index.html">Home</a>
       <a href="plan.html">Planner</a>
@@ -23,65 +25,80 @@
   <main class="booked" id="booked">
     <section class="booked-hero">
       <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
-      <h1 class="reveal" style="--d:200ms">You bought back <span class="grad"><span id="bHours">0</span> hours.</span></h1>
-      <p class="reveal" style="--d:300ms" id="bSub">Your services are booked and paid with PayPal.</p>
+      <h1 class="reveal" style="--d:200ms">You bought back</h1>
+      <div class="dmx xl reveal" style="--d:300ms;height:120px" id="bHours"><span class="u">hours</span></div>
+      <p class="reveal" style="--d:380ms" id="bSub">Your services are booked and paid with PayPal.</p>
+      <div class="wave reveal" id="bWave" style="--d:440ms;width:min(520px,100%);margin-top:8px"></div>
     </section>
 
-    <div class="b-stats">
-      <div class="stat hero-stat reveal" style="--d:350ms"><span class="label">Hours bought back</span><span class="value" id="bStatHours">0</span></div>
-      <div class="stat reveal" style="--d:430ms"><span class="label">Paid with PayPal</span><span class="value" id="bSpent">$0</span></div>
-      <div class="stat reveal" style="--d:510ms"><span class="label">Saved by haggling</span><span class="value" id="bHaggle">$0</span></div>
+    <div class="b-grid">
+      <div class="tile omb o-pink breathe reveal" style="--d:450ms"><div class="t-label">Paid with PayPal</div><div class="dmx lg" id="bSpent"></div><div class="t-foot"><span>One checkout</span></div></div>
+      <div class="tile omb o-sage breathe reveal" style="--d:520ms"><div class="t-label">Services booked</div><div class="dmx lg" id="bCount"></div><div class="t-foot"><span>Around your plans</span></div></div>
+      <div class="tile omb o-peach breathe reveal" style="--d:590ms"><div class="t-label">Saved by haggling</div><div class="dmx lg" id="bHaggle"></div><div class="t-foot"><span>Agent vs agent</span></div></div>
     </div>
 
-    <div class="panel reveal" style="--d:560ms">
-      <h2>Your week, handled</h2>
-      <p class="muted">Everything below is scheduled around your commitments.</p>
+    <div class="panel glass reveal" style="--d:620ms;margin-bottom:20px">
+      <div class="panel-head"><div><h2>Your booked week</h2><p class="muted">Flip through it. Each card takes over the page colors.</p></div></div>
+      <div id="bFlow" tabindex="0"></div>
+    </div>
+
+    <div class="panel glass reveal" style="--d:680ms">
+      <h2>Schedule</h2>
       <ul class="b-list" id="bList"></ul>
       <div class="b-meta" id="bMeta"></div>
     </div>
 
-    <div class="b-actions reveal" style="--d:640ms">
-      <a href="plan.html"><span class="primary" style="display:inline-block">Plan another week</span></a>
-      <a class="ghost-link" href="index.html">Back to home</a>
+    <div class="b-actions reveal" style="--d:740ms">
+      <a class="btn light" href="plan.html">Plan another week <span class="plus">+</span></a>
+      <a class="btn" href="index.html">Back to home <span class="plus">→</span></a>
     </div>
   </main>
 
   <footer>Sandbox demo. Providers are simulated merchants; payments run through PayPal's sandbox.</footer>
+  <script src="shared/catalog.js"></script>
+  <script src="ui.js"></script>
   <script src="site.js"></script>
   <script>
     (function () {
+      const UI = window.TimeBackUI;
       const $ = (id) => document.getElementById(id);
       const money = (n) => `$${Number(n).toFixed(2)}`;
       const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const cat = (taskLabel) => {
+        const t = (window.TIMEBACK_CATALOG.tasks || []).find((x) => x.label === taskLabel);
+        return (t && t.category) || 'home';
+      };
       let b = null;
       try { b = JSON.parse(decodeURIComponent(location.hash.slice(1))); } catch (e) { /* no hash */ }
       if (!b) { try { b = JSON.parse(sessionStorage.getItem('timeback:booking')); } catch (e) { /* storage blocked */ } }
-      if (!b || !Array.isArray(b.items)) {
-        $('booked').innerHTML = '<section class="booked-hero" style="padding:80px 0"><h1>No booking yet.</h1><p>Plan your week first, then book it with PayPal.</p><div class="b-actions"><a href="plan.html"><span class="primary" style="display:inline-block">Plan my week</span></a></div></section>';
+      if (!b || !Array.isArray(b.items) || !b.items.length) {
+        $('booked').innerHTML = '<section class="booked-hero" style="padding:90px 0"><h1>No booking yet.</h1><p>Plan your week first, then book it with PayPal.</p><div class="b-actions"><a class="btn light" href="plan.html">Plan my week <span class="plus">+</span></a></div></section>';
         return;
       }
-      const count = (el, target, fmt) => {
-        const t0 = performance.now();
-        const tick = (now) => {
-          const k = Math.min(1, (now - t0) / 1300);
-          el.textContent = fmt(target * (1 - Math.pow(1 - k, 3)));
-          if (k < 1) requestAnimationFrame(tick);
-        };
-        setTimeout(() => requestAnimationFrame(tick), 350);
-      };
-      count($('bHours'), b.hoursSaved, (v) => v.toFixed(1));
-      count($('bStatHours'), b.hoursSaved, (v) => `${v.toFixed(1)}h`);
-      count($('bSpent'), b.spent, money);
-      count($('bHaggle'), b.haggled || 0, money);
+      UI.setPalette('booked');
+      setTimeout(() => {
+        UI.countDot($('bHours'), b.hoursSaved, (v) => v.toFixed(1), 1500);
+        UI.countDot($('bSpent'), b.spent, (v) => `$${v.toFixed(0)}`, 1200);
+        UI.countDot($('bCount'), b.items.length, (v) => v.toFixed(0), 900);
+        UI.countDot($('bHaggle'), b.haggled || 0, (v) => `$${v.toFixed(2)}`, 1200);
+        UI.wave($('bWave'), 0.85);
+      }, 350);
       $('bSub').textContent = `${b.items.length} services booked and paid in one PayPal checkout${b.demo ? ' (demo mode)' : ''}.`;
+
+      UI.coverflow($('bFlow'), b.items, {
+        start: 0,
+        render: (it) => `${UI.art(cat(it.task))}<div class="cf-meta"><b>${esc(it.task)}</b><span>${esc(it.when)} · +${it.hours}h</span><span class="bars"><i></i><i></i><i></i><i></i><i></i></span></div>`,
+        onFocus: (it) => UI.setPalette(cat(it.task)),
+      });
+
       $('bList').innerHTML = b.items.map((it, i) => `
-        <li style="--d:${600 + i * 80}ms">
+        <li style="--d:${700 + i * 80}ms">
+          <span class="thumb">${UI.art(cat(it.task))}</span>
           <span class="when">${esc(it.when)}</span>
           <span>${esc(it.task)}<small>${esc(it.provider)}${it.deal ? ' · negotiated' : ''} · saves ${it.hours}h</small></span>
           <b>${money(it.price)}</b>
         </li>`).join('');
       $('bMeta').textContent = `PayPal order ${b.orderId}${b.captureId ? ` · capture ${b.captureId}` : ''} · status ${b.status}`;
-      if (window.TimeBackReveal) window.TimeBackReveal();
     })();
   </script>
 </body>

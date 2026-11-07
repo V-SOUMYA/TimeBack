@@ -17,6 +17,7 @@ const EXAMPLES = [
 ];
 
 const $ = (id) => document.getElementById(id);
+const UI = window.TimeBackUI;
 const money = (n) => `$${Number(n).toFixed(2)}`;
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -73,6 +74,10 @@ async function init() {
   });
 
   $('planBtn').addEventListener('click', () => plan());
+  $('budgetInput').addEventListener('input', (e) => {
+    UI.dot($('budgetDm'), `$${e.target.value}`);
+    UI.ruler($('budgetRuler'), (e.target.value - 20) / 380);
+  });
   $('budgetInput').addEventListener('change', () => replan(true));
   $('ecoToggle').addEventListener('change', () => replan(true));
   $('quickFilter').addEventListener('input', (e) => state.gridApi && state.gridApi.setGridOption('quickFilterText', e.target.value));
@@ -82,6 +87,9 @@ async function init() {
     replan(true);
   });
   $('drawerClose').addEventListener('click', () => $('drawer').classList.add('hidden'));
+  $('dayPills').addEventListener('click', onDayClick);
+  $('weekBars').addEventListener('click', onDayClick);
+  $('pickInfo').addEventListener('click', onPickAction);
   $('demoPay').addEventListener('click', demoCheckout);
 
   createGrid();
@@ -98,12 +106,13 @@ function badge(text, on) {
 async function plan({ auto = false } = {}) {
   const btn = $('planBtn');
   btn.disabled = true;
-  btn.textContent = 'Planning…';
+  btn.innerHTML = 'Planning… <span class="plus">⏱</span>';
   $('hcTag').textContent = 'Planning…';
-  $('hcTag').className = 'hc-tag busy';
+  $('hcTag').className = 'tag busy';
+  UI.setPalette('plan');
   $('steps').innerHTML = '';
   $('results').classList.add('loading');
-  ['hcAfter', 'ringVal'].forEach((id) => { $(id).dataset.v = 0; });
+  $('hcAfter').dataset.v = 0;
   if (!auto) $('heroCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
   const first = addStep('Reading your week…', true);
   try {
@@ -111,6 +120,9 @@ async function plan({ auto = false } = {}) {
     state.excluded.clear();
     state.deals = {};
     state.booked = false;
+    state.day = null;
+    state.picksKey = null;
+    state.pickId = null;
     $('receipt').classList.add('hidden');
     const [data] = await Promise.all([api('/api/plan', { text: $('prompt').value }), sleep(700)]);
     try { history.replaceState(null, '', `?q=${encodeURIComponent($('prompt').value)}`); } catch (e) { /* file:// may refuse */ }
@@ -144,10 +156,11 @@ async function plan({ auto = false } = {}) {
     first.classList.remove('live');
     addStep(err.message).classList.add('err');
     $('hcTag').textContent = 'Error';
+    $('hcTag').className = 'tag';
   } finally {
     $('results').classList.remove('loading');
     btn.disabled = false;
-    btn.textContent = 'Plan my week';
+    btn.innerHTML = 'Plan my week <span class="plus">+</span>';
   }
 }
 
@@ -164,63 +177,16 @@ const WAKING_HOURS_PER_DAY = 15; // 7am to 10pm
 function renderHero(plan) {
   if (!state.request || !state.config) return;
   const selfHours = Object.fromEntries(state.config.tasks.map((t) => [t.id, t.selfHours]));
-  const chosen = plan.rows.filter((r) => ['Recommended', 'Booked'].includes(r.status));
   const choreTotal = state.request.tasks.reduce((s, t) => s + (selfHours[t] || 0), 0);
-  const busyByDay = Array(7).fill(0);
-  plan.busy.forEach((b) => (busyByDay[b.day] += b.length));
-  const busyTotal = busyByDay.reduce((a, b) => a + b, 0);
-
+  const busyTotal = plan.busy.reduce((s, b) => s + b.length, 0);
   const before = WAKING_HOURS_PER_DAY * 7 - busyTotal - choreTotal;
   const after = before + plan.hoursSaved;
-  countTo($('hcBefore'), before);
-  countTo($('hcAfter'), after);
-  countTo($('ringVal'), plan.hoursSaved, (v) => v.toFixed(1));
-  const C = 2 * Math.PI * 52;
-  const share = choreTotal ? Math.min(1, plan.hoursSaved / choreTotal) : 0;
-  $('ringProg').style.strokeDashoffset = String(C * (1 - share));
-  $('hcDelta').innerHTML = plan.hoursSaved
-    ? `<b>+${plan.hoursSaved} hours</b> for ${money(plan.spent)} · ${((plan.hoursSaved * 60) / Math.max(plan.spent, 1)).toFixed(1)} min per dollar`
-    : 'Raise the budget to buy back time';
+  $('hcBefore').textContent = before.toFixed(0);
+  $('hcDelta').textContent = `+${plan.hoursSaved}h`;
+  UI.countDot($('hcAfter'), after, (v) => v.toFixed(1), 1100);
+  UI.wave($('hcWave'), choreTotal ? 0.15 + 0.8 * Math.min(1, plan.hoursSaved / choreTotal) : 0.15);
   $('hcTag').textContent = state.booked ? 'Booked' : 'Plan ready';
-  $('hcTag').className = `hc-tag ${state.booked ? 'booked' : 'ready'}`;
-
-  // Two rows of seven day-bars: before and after. Bar height = hours (6h = full).
-  const chorePerDay = choreTotal / 7;
-  const savedPerDay = Math.min(plan.hoursSaved / 7, chorePerDay);
-  const pct = (h) => `${Math.min(100, (h / 6) * 100)}%`;
-  const row = (label, after) => {
-    const cells = DAYS.map((d, i) => `<div class="sd"><div class="sb">
-        <i class="seg busy" style="--i:${i}" data-h="${pct(busyByDay[i])}"></i>
-        <i class="seg chore" style="--i:${i}" data-h="${pct(after ? chorePerDay - savedPerDay : chorePerDay)}"></i>
-        ${after ? `<i class="seg freed" style="--i:${i + 3}" data-h="${pct(savedPerDay)}"></i>` : ''}
-      </div><span>${d[0]}</span></div>`).join('');
-    return `<div class="srow"><span class="slabel">${label}</span><div class="sdays">${cells}</div></div>`;
-  };
-  const strip = $('strip');
-  if (!strip.children.length) strip.innerHTML = row('Before', false) + row('After', true);
-  else {
-    // Update in place so bars animate between plans instead of re-mounting.
-    const tmp = document.createElement('div');
-    tmp.innerHTML = row('Before', false) + row('After', true);
-    const next = tmp.querySelectorAll('.seg');
-    strip.querySelectorAll('.seg').forEach((el, i) => next[i] && (el.dataset.h = next[i].dataset.h));
-  }
-  requestAnimationFrame(() => requestAnimationFrame(() => strip.querySelectorAll('.seg').forEach((el) => (el.style.height = el.dataset.h))));
-}
-
-function countTo(el, target, fmt = (v) => v.toFixed(Number.isInteger(target) ? 0 : 1), dur = 900) {
-  const start = Number(el.dataset.v || 0);
-  if (start === target) { el.textContent = fmt(target); return; }
-  const t0 = performance.now();
-  const step = (now) => {
-    const k = Math.min(1, (now - t0) / dur);
-    const v = start + (target - start) * (1 - Math.pow(1 - k, 3));
-    el.textContent = fmt(k === 1 ? target : v);
-    if (k < 1) requestAnimationFrame(step);
-  };
-  el.dataset.v = target;
-  requestAnimationFrame(step);
-  if (start && start !== target) { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+  $('hcTag').className = `tag ${state.booked ? 'booked' : 'ready'}`;
 }
 
 async function replan(explain = false) {
@@ -254,12 +220,17 @@ function render({ plan, explanation, request }) {
   state.prevStatus = Object.fromEntries(rows.map((r) => [r.id, r.status]));
   state.gridApi.setGridOption('pinnedBottomRowData', [totalsRow(plan)]);
 
-  countTo($('statHours'), plan.hoursSaved, (v) => `${v.toFixed(1)}h`);
-  countTo($('statSpent'), plan.spent, money);
-  $('statBudget').textContent = `of ${money(plan.budget)}`;
-  countTo($('statRate'), plan.spent ? (plan.hoursSaved * 60) / plan.spent : 0, (v) => v.toFixed(1));
+  const rate = plan.spent ? (plan.hoursSaved * 60) / plan.spent : 0;
   const haggled = Object.values(state.deals).reduce((s, d) => s + d.saved, 0);
-  countTo($('statHaggle'), haggled, money);
+  UI.countDot($('statHours'), plan.hoursSaved, (v) => v.toFixed(1));
+  UI.countDot($('statSpent'), plan.spent, (v) => `$${v.toFixed(0)}`);
+  UI.countDot($('statRate'), rate, (v) => v.toFixed(1));
+  UI.countDot($('statHaggle'), haggled, (v) => `$${v.toFixed(2)}`);
+  UI.ruler($('rateRuler'), rate / 12);
+  $('statBudget').textContent = `${money(plan.spent)} of ${money(plan.budget)} budget`;
+  UI.dot($('budgetDm'), `$${Math.round(plan.budget)}`);
+  $('budgetInput').value = plan.budget;
+  UI.ruler($('budgetRuler'), (plan.budget - 20) / 380);
 
   if (explanation) {
     $('explanation').textContent = explanation;
@@ -268,6 +239,7 @@ function render({ plan, explanation, request }) {
   renderWeek(plan);
   renderCart(plan);
   renderHero(plan);
+  renderPicks(plan);
 }
 
 const rank = (s) => ({ Booked: 0, Recommended: 0, Alternative: 1, 'Over budget': 2, 'Below rating': 3, Excluded: 4 }[s] ?? 5);
@@ -436,8 +408,9 @@ async function haggle(row) {
   $('chat').innerHTML = '';
   $('dealSummary').innerHTML = '';
   $('vsSellerName').textContent = row.provider.split(' ')[0];
-  $('vsBuyer').textContent = '–';
-  $('vsSeller').textContent = money(row.basePrice);
+  UI.dot($('vsBuyer'), '--');
+  UI.dot($('vsSeller'), row.basePrice.toFixed(0));
+  UI.setPalette(categoryOf(row.task));
   try {
     const typing = showTyping('buyer');
     const [deal] = await Promise.all([api('/api/negotiate', { optionId: row.id }), sleep(700)]);
@@ -448,7 +421,7 @@ async function haggle(row) {
         await sleep(650);
         t.remove();
       }
-      $(line.from === 'buyer' ? 'vsBuyer' : 'vsSeller').textContent = money(line.price);
+      UI.dot($(line.from === 'buyer' ? 'vsBuyer' : 'vsSeller'), line.price.toFixed(2));
       const el = document.createElement('div');
       el.className = `msg ${line.from}`;
       el.innerHTML = `<div class="who">${line.from === 'buyer' ? 'Your agent' : deal.provider}</div><div>${escapeHtml(line.text)}</div><div class="offer">${money(line.price)}</div>`;
@@ -474,36 +447,88 @@ function showTyping(from) {
   return t;
 }
 
-// ---------- week view ----------
+// ---------- week view: day pills, bars, day timeline ----------
 function renderWeek(plan) {
-  const startH = 7;
-  const endH = 22;
-  const span = endH - startH;
   const chosen = plan.rows.filter((r) => ['Recommended', 'Booked'].includes(r.status));
-  let html = '<div class="week-grid">';
-  html += '<div class="hours">' + Array.from({ length: span / 3 + 1 }, (_, i) => `<span style="top:${((i * 3) / span) * 100}%">${fmtHour(startH + i * 3)}</span>`).join('') + '</div>';
-  let n = 0;
-  DAYS.forEach((d, day) => {
-    html += `<div class="day"><div class="day-name">${d}</div><div class="day-body">`;
-    plan.busy.filter((b) => b.day === day).forEach((b) => {
-      html += block(b.start, b.length, b.label, 'busy', startH, span, b.label, n++);
-    });
-    chosen.filter((r) => r.slot.day === day).forEach((r) => {
-      html += block(r.slot.start, r.slot.length, `${r.taskLabel.split(' ')[0]} · ${r.provider.split(' ')[0]}`, 'handled', startH, span, `${r.provider}: saves ${r.hoursSaved}h`, n++);
-    });
-    html += '</div></div>';
+  const byDay = DAYS.map((_, d) => ({
+    busy: plan.busy.filter((b) => b.day === d),
+    handled: chosen.filter((r) => r.slot.day === d),
+  }));
+  if (state.day === undefined || state.day === null) {
+    const first = byDay.findIndex((x) => x.handled.length || x.busy.length);
+    state.day = first < 0 ? 0 : first;
+  }
+  $('dayPills').innerHTML = DAYS.map((d, i) => {
+    const n = byDay[i].handled.length;
+    return `<button type="button" data-day="${i}" class="${i === state.day ? 'on' : ''}" aria-label="${d}">${d[0]}${n ? `<span class="n">${n}</span>` : ''}</button>`;
+  }).join('');
+  const maxH = 6;
+  $('weekBars').innerHTML = byDay.map((x, i) => {
+    const busyH = x.busy.reduce((s, b) => s + b.length, 0);
+    const freeH = x.handled.reduce((s, r) => s + r.hoursSaved, 0);
+    return `<div class="wb ${i === state.day ? 'on' : ''}" data-day="${i}" title="${DAYS[i]}: ${busyH}h commitments, ${freeH.toFixed(1)}h bought back">
+      <i class="b-busy" style="height:${(Math.min(busyH, maxH) / maxH) * 100}%"></i><i class="b-free" style="height:${(Math.min(freeH, maxH) / maxH) * 100}%"></i></div>`;
+  }).join('');
+  const day = byDay[state.day];
+  const items = [
+    ...day.busy.map((b) => ({ start: b.start, html: `<li class="busy"><span class="tm">${fmtTime(b.start)}</span><span>${escapeHtml(b.label)}<small>${b.length}h · fixed commitment</small></span><span></span></li>` })),
+    ...day.handled.map((r) => ({ start: r.slot.start, html: `<li class="handled"><span class="tm">${fmtTime(r.slot.start)}</span><span>${escapeHtml(r.taskLabel)}<small>${escapeHtml(r.provider)}${r.rescheduledFrom ? ' · moved to avoid a clash' : ''}</small></span><b class="saved">+${r.hoursSaved}h</b></li>` })),
+  ].sort((a, b) => a.start - b.start);
+  $('dayList').innerHTML = items.length
+    ? items.map((x, i) => x.html.replace('<li ', `<li style="--d:${i * 60}ms" `)).join('')
+    : '<li class="empty">Nothing booked this day. Enjoy it.</li>';
+}
+
+function onDayClick(e) {
+  const el = e.target.closest('[data-day]');
+  if (!el) return;
+  state.day = Number(el.dataset.day);
+  renderWeek(state.plan);
+}
+
+const fmtTime = (h) => `${((h + 11) % 12) + 1}${h < 12 ? 'am' : 'pm'}`;
+
+// ---------- picks coverflow (dynamic palette) ----------
+function categoryOf(taskId) {
+  const t = state.config.tasks.find((x) => x.id === taskId);
+  return (t && t.category) || 'home';
+}
+
+function renderPicks(plan) {
+  const chosen = plan.rows.filter((r) => ['Recommended', 'Booked'].includes(r.status));
+  const key = chosen.map((r) => `${r.id}:${r.price}:${r.status}`).join('|');
+  if (key === state.picksKey) return;
+  state.picksKey = key;
+  if (!chosen.length) {
+    $('picks').innerHTML = '<p class="muted" style="text-align:center;padding:40px 0">No services picked yet. Raise the budget or tick an option.</p>';
+    $('pickInfo').innerHTML = '';
+    return;
+  }
+  const keepId = state.pickId;
+  const start = Math.max(0, chosen.findIndex((r) => r.id === keepId));
+  UI.coverflow($('picks'), chosen, {
+    start,
+    render: (r) => `${UI.art(categoryOf(r.task))}<div class="cf-meta"><b>${escapeHtml(r.taskLabel)}</b><span>${escapeHtml(r.provider)}</span><span class="bars"><i></i><i></i><i></i><i></i><i></i></span></div>`,
+    onFocus: (r) => {
+      state.pickId = r.id;
+      UI.setPalette(categoryOf(r.task));
+      const share = Math.min(100, (r.hoursSaved / (r.selfHours || r.hoursSaved)) * 100);
+      $('pickInfo').innerHTML = `<div class="thumb">${UI.art(categoryOf(r.task))}</div>
+        <div class="info"><b>${escapeHtml(r.provider)}</b><span>${escapeHtml(r.taskLabel)} · ${escapeHtml(r.slotLabel)} · saves ${r.hoursSaved}h of ${r.selfHours}h · ${r.dealId ? `<s>${money(r.basePrice)}</s> ` : ''}${money(r.price)}</span>
+        <div class="track"><i style="width:${share}%"></i></div></div>
+        <div class="acts">${r.dealId || state.booked ? '' : `<button class="ghost" data-act="haggle">Haggle</button>`}${state.booked ? '' : `<button class="ghost" data-act="drop">Drop</button>`}</div>`;
+    },
   });
-  html += '</div>';
-  $('week').innerHTML = html;
 }
 
-function block(start, length, label, cls, startH, span, title = label, i = 0) {
-  const top = ((Math.max(start, startH) - startH) / span) * 100;
-  const h = (Math.min(length, span) / span) * 100;
-  return `<div class="blk ${cls}" style="top:${top}%;height:${Math.max(h, 6)}%;--i:${i}" title="${escapeHtml(title)}">${escapeHtml(label)}</div>`;
+function onPickAction(e) {
+  const btn = e.target.closest('[data-act]');
+  if (!btn || !state.pickId) return;
+  const row = state.plan.rows.find((r) => r.id === state.pickId);
+  if (!row) return;
+  if (btn.dataset.act === 'haggle') haggle(row);
+  if (btn.dataset.act === 'drop') togglePick(row);
 }
-
-const fmtHour = (h) => `${((h + 11) % 12) + 1}${h < 12 ? 'a' : 'p'}`;
 
 // ---------- checkout ----------
 function renderCart(plan) {
@@ -555,6 +580,7 @@ async function demoCheckout() {
 
 function onBooked(result) {
   state.booked = true;
+  UI.setPalette('booked');
   render({ plan: state.plan });
   const chosen = state.plan.rows.filter((r) => ['Recommended', 'Booked'].includes(r.status));
   const booking = {

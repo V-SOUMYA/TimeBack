@@ -11,161 +11,199 @@
   <link rel="stylesheet" href="site.css" />
 </head>
 <body class="landing">
-  <div class="aurora" aria-hidden="true"></div>
+  <div class="backdrop" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
   <div class="progress" aria-hidden="true"></div>
-  <header class="top">
-    <a class="brand" href="index.html"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></span> TimeBack</a>
+
+  <header class="top glass">
+    <a class="brand" href="index.html"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></span>TimeBack</a>
     <nav class="nav">
+      <a href="#glance">Your week</a>
+      <a href="#services">Services</a>
       <a href="#how">How it works</a>
-      <a href="#features">Features</a>
-      <a href="plan.html">Planner</a>
       <a class="cta" href="plan.html">Plan my week</a>
     </nav>
   </header>
 
   <main>
-    <!-- ---------- hero with parallax scene ---------- -->
+    <!-- ================= HERO ================= -->
     <section class="l-hero">
       <div class="wrap">
         <div>
-          <div class="eyebrow reveal"><span class="dot"></span>AI agent · hours per dollar · PayPal checkout</div>
-          <h1 class="reveal" style="--d:80ms">Buy back <span class="grad">your week.</span></h1>
-          <p class="sub reveal" style="--d:160ms">Tell TimeBack what's coming up and what you can spend. It picks the chores worth handing off, haggles for better prices, fits everything around your plans, and books it all with PayPal.</p>
-          <form class="ask reveal" style="--d:240ms" action="plan.html" method="get">
+          <div class="eyebrow reveal"><span class="dot"></span>AI agent · PayPal checkout</div>
+          <h1 class="reveal" style="--d:80ms">Buy back<br><span class="ombre-text">your week.</span></h1>
+          <p class="sub reveal" style="--d:160ms">Tell TimeBack what's coming up and what you can spend. It hands off the right chores, haggles for better prices, and books everything in one PayPal checkout.</p>
+          <form class="ask glass reveal" style="--d:240ms" action="plan.html" method="get">
             <textarea name="q" rows="3" aria-label="Describe your week">I have two exams next week and $150. Help me free up as much time as possible. I'd like greener options if they're close in price, and I want to keep doing my own commute.</textarea>
             <div class="ask-actions">
               <div class="examples">
                 <a class="chip" href="plan.html?q=Work%20deadline%20Thursday%2C%20%2480%20to%20spend.%20I%20hate%20laundry%20and%20cleaning.">Work crunch</a>
                 <a class="chip" href="plan.html?q=New%20parent%2C%20no%20sleep%2C%20%24250%20budget.%20Food%20and%20home%20stuff%20please%2C%20only%20well-rated%20services.">New parent</a>
               </div>
-              <button type="submit" class="primary">Plan my week →</button>
+              <button type="submit" class="btn light">Plan my week <span class="plus">+</span></button>
             </div>
           </form>
         </div>
 
-        <div class="scene" aria-hidden="true">
-          <div class="layer rings" data-depth="6" data-speed="0.12">
-            <svg viewBox="0 0 520 520">
-              <circle cx="260" cy="260" r="250" stroke-opacity=".10" stroke-width="1.5"/>
-              <circle cx="260" cy="260" r="200" stroke-opacity=".14" stroke-width="1.5" stroke-dasharray="4 10"/>
-              <circle cx="260" cy="260" r="150" stroke-opacity=".10" stroke-width="1.5"/>
-              <line x1="260" y1="10" x2="260" y2="40" stroke="#23443a" stroke-opacity=".25" stroke-width="3"/>
-              <line x1="510" y1="260" x2="480" y2="260" stroke="#23443a" stroke-opacity=".25" stroke-width="3"/>
-              <line x1="260" y1="510" x2="260" y2="480" stroke="#23443a" stroke-opacity=".25" stroke-width="3"/>
-              <line x1="10" y1="260" x2="40" y2="260" stroke="#23443a" stroke-opacity=".25" stroke-width="3"/>
-            </svg>
-          </div>
-
-          <div class="layer big-card" data-depth="10" data-speed="0.05">
-            <div class="lbl">Free time this week</div>
-            <div class="num"><span data-count="95.2" data-decimals="1">0</span><small>h</small></div>
-            <div class="delta">+14.2 hours for $148</div>
-            <div class="mini-bars">
-              <i style="height:55%;animation-delay:.1s"></i><i style="height:80%;animation-delay:.18s"></i><i style="height:60%;animation-delay:.26s"></i>
-              <i style="height:85%;animation-delay:.34s"></i><i style="height:62%;animation-delay:.42s"></i><i style="height:58%;animation-delay:.5s"></i><i style="height:64%;animation-delay:.58s"></i>
+        <!-- phone trio with parallax -->
+        <div class="phones" aria-hidden="true">
+          <div class="phone ph1 ph-in" data-depth="-14" data-speed="0.08" data-tilt="-6">
+            <div class="notch"></div>
+            <div class="screen s1">
+              <div class="hello">Tell me about<br>your week</div>
+              <div class="dial"><div class="ticks"></div><div class="sweep"></div><div class="knob">⏱</div></div>
+              <span class="btn s-btn" style="font-size:13px">Start planning <span class="plus">+</span></span>
             </div>
           </div>
 
-          <div class="layer float f1" data-depth="22" data-speed="0.22"><span class="ic clay">+</span><span><b>Laundry handed off</b><small>+2.3 hours · EcoFold</small></span></div>
-          <div class="layer float f2" data-depth="-18" data-speed="0.32"><span class="ic forest">%</span><span><b>Deal: $30 → $26.26</b><small>Your agent haggled</small></span></div>
-          <div class="layer float f3" data-depth="-26" data-speed="0.18"><span class="ic plum">↻</span><span><b>Moved after Exam 1</b><small>No clashes</small></span></div>
-          <div class="layer float f4" data-depth="16" data-speed="0.28"><span class="ic pay">Pay</span><span><b>Paid with PayPal</b><small>One checkout · 7 services</small></span></div>
+          <div class="phone ph2 ph-in" data-depth="10" data-speed="0.03">
+            <div class="notch"></div>
+            <div class="screen s2" style="background:#000">
+              <div class="s-top"><span class="back">←</span>Haggle</div>
+              <div class="s-card">
+                <div class="s-row">Agent deal <span class="s-toggle">On</span></div>
+                <div class="s-center"><div class="dmx lg" data-dot="26" style="height:72px"></div><small>dollars · was $30</small></div>
+                <div class="ruler" data-ticks="31" data-ruler="0.72" style="margin-top:6px"></div>
+                <div class="s-row" style="font-size:12px;opacity:.85;margin-top:auto"><span>tue<br><span style="font-size:20px;opacity:.6">25</span></span><span>QuickTidy · 1 hr</span></div>
+                <span class="btn" style="margin:6px auto 0;font-size:13px;background:rgba(0,0,0,.3)">Book it <span class="plus">+</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="phone ph3 ph-in" data-depth="18" data-speed="0.12" data-tilt="5">
+            <div class="notch"></div>
+            <div class="screen s3">
+              <div class="s-top" style="padding-top:56px"><span class="back">←</span><span class="mini-pills"><i>M</i><i class="on">T</i><i>W</i><i>T</i><i>F</i></span></div>
+              <div class="big">Free time<div class="dmx lg" data-dot="95" style="height:56px"></div>hours</div>
+              <div class="wave" id="heroWave" style="margin:6px 0"></div>
+              <div class="s-tiles">
+                <div class="s-tile wide omb o-pink breathe"><span>Hours bought back</span><b>14.6 h</b></div>
+                <div class="s-tile omb o-sage"><span>Per dollar</span><b>5.8 min</b></div>
+                <div class="s-tile omb o-lilac breathe"><span>Haggled</span><b>$3.74</b></div>
+                <div class="s-tile omb o-blue"><span>Services</span><b>7</b></div>
+                <div class="s-tile omb o-peach breathe"><span>Clashes</span><b>0</b></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <a class="scroll-hint" href="#how"><i></i>Scroll</a>
     </section>
 
-    <!-- ---------- how it works ---------- -->
+    <!-- ================= GLASS BENTO OVER MOTION (image-2 style) ================= -->
+    <section class="section" id="glance">
+      <div class="wrap">
+        <div class="center">
+          <div class="kicker reveal">Your week at a glance</div>
+          <h2 class="reveal">Every number is time<br>back in your life.</h2>
+          <p class="lead reveal">The exam-week demo: two exams, $150, and seven chores handed off.</p>
+        </div>
+        <div class="stage reveal">
+          <div class="photo"></div><div class="streaks"></div>
+          <div class="bento">
+            <div class="tile glass span-2">
+              <div class="t-label">Free time this week</div>
+              <div class="tile-row"><div class="dmx xl" data-dot="95.6" data-decimals="1"><span class="u">h</span></div><div style="display:flex;align-items:center;gap:10px"><div class="vruler"><i></i><i></i><i></i><i></i><i class="mid"></i><i></i><i></i><i></i><i></i></div><span class="tri"></span></div></div>
+              <div class="t-foot"><span>Up from 81 hours</span><span>+14.6 h</span></div>
+            </div>
+            <div class="tile glass">
+              <div class="t-label">Paid with PayPal</div>
+              <div class="dmx lg" data-dot="150" data-prefix="$"></div>
+              <div class="t-foot"><span>One checkout</span></div>
+            </div>
+            <div class="tile glass">
+              <div class="t-label">Minutes per dollar</div>
+              <div class="dmx lg" data-dot="5.8" data-decimals="1"></div>
+              <div class="slider-line" style="--f:58%"></div>
+              <div class="t-foot"><span>Low</span><span>High</span></div>
+            </div>
+            <div class="tile glass">
+              <div class="t-label">Saved by haggling</div>
+              <div class="dmx lg" data-dot="3.74" data-decimals="2" data-prefix="$"></div>
+              <div class="t-foot"><span>Agent vs agent</span></div>
+            </div>
+            <div class="tile glass">
+              <div class="t-label">Chores handed off</div>
+              <div class="dmx lg" data-dot="7"></div>
+              <div class="ruler" data-ticks="25" data-ruler="0.8"></div>
+              <div class="t-foot"><span>Of 7 asked</span><span>Good</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= COVERFLOW (image-3 style) ================= -->
+    <section class="section" id="services">
+      <div class="wrap center">
+        <div class="kicker reveal">What you can hand off</div>
+        <h2 class="reveal">Flip through your chores.</h2>
+        <p class="lead reveal">Each chore has providers ranked by hours per dollar. The page takes on the colors of the one in focus.</p>
+      </div>
+      <div class="cf-wrap reveal">
+        <div id="landingFlow" tabindex="0"></div>
+        <div class="player glass" id="landingPlayer"></div>
+      </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
     <section class="section" id="how">
       <div class="wrap">
         <div class="kicker reveal">How it works</div>
-        <h2 class="reveal">From "I'm swamped" to a booked week in four steps.</h2>
-        <p class="lead reveal">You describe your week in plain words. The agent does the rest, and you stay in control at every step.</p>
-        <div class="steps-line">
-          <span class="fill"></span>
-          <div class="step-card"><span class="n">1</span><div><h3>Tell it about your week</h3><p>"Two exams, $150, I want to keep my own commute." Claude turns that into a budget, tasks and fixed commitments.</p></div><span class="tag">AI understands</span></div>
-          <div class="step-card"><span class="n">2</span><div><h3>It finds the best hours per dollar</h3><p>An exact optimizer compares every provider and picks the mix that frees the most time within budget.</p></div><span class="tag">Optimal plan</span></div>
-          <div class="step-card"><span class="n">3</span><div><h3>Your agent haggles</h3><p>Click Haggle and your buyer agent negotiates with each provider's agent for a lower price.</p></div><span class="tag">Agent vs agent</span></div>
-          <div class="step-card"><span class="n">4</span><div><h3>Book everything with PayPal</h3><p>One checkout pays for every service. Deliveries are scheduled around your exams.</p></div><span class="tag">PayPal checkout</span></div>
+        <h2 class="reveal">Four steps. One checkout.</h2>
+        <p class="lead reveal">You describe your week. The agent does the rest, and you approve every step.</p>
+        <div class="how">
+          <div class="tile omb o-sage breathe reveal"><div class="dmx" data-dot="1"></div><div><h3>Tell it about your week</h3><p>Claude turns plain words into a budget, chores and fixed commitments.</p></div></div>
+          <div class="tile omb o-pink breathe reveal" style="--d:100ms"><div class="dmx" data-dot="2"></div><div><h3>Best hours per dollar</h3><p>An exact optimizer picks the mix that frees the most time within budget.</p></div></div>
+          <div class="tile omb o-lilac breathe reveal" style="--d:200ms"><div class="dmx" data-dot="3"></div><div><h3>Your agent haggles</h3><p>Your buyer agent negotiates with each provider's agent for a lower price.</p></div></div>
+          <div class="tile omb o-peach breathe reveal" style="--d:300ms"><div class="dmx" data-dot="4"></div><div><h3>Pay once with PayPal</h3><p>One order, a line item per service, scheduled around your plans.</p></div></div>
         </div>
       </div>
     </section>
 
-    <!-- ---------- features ---------- -->
-    <section class="section" id="features" style="padding-top: 40px">
-      <div class="wrap split">
-        <div>
-          <div class="kicker reveal">Hours per dollar</div>
-          <h2 class="reveal">The cheapest option isn't always the best one.</h2>
-          <p class="lead reveal">TimeBack ranks every option by how much of your life it gives back for each dollar. A $49 meal plan that saves 5.6 hours beats a $29 kit that saves 2.5.</p>
-        </div>
-        <div class="vis">
-          <div class="compare">
-            <div class="cmp-row win"><span>Campus Pantry</span><span class="track"><i style="--w:100%"></i></span><b>10.5 min/$</b></div>
-            <div class="cmp-row"><span>FreshCart</span><span class="track"><i style="--w:79%"></i></span><span>8.3 min/$</span></div>
-            <div class="cmp-row win"><span>Mama's Kitchen</span><span class="track"><i style="--w:66%"></i></span><b>6.9 min/$</b></div>
-            <div class="cmp-row"><span>StudentChef kit</span><span class="track"><i style="--w:50%"></i></span><span>5.2 min/$</span></div>
-          </div>
-          <div class="cmp-note">Minutes of your time saved per dollar spent.</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" style="padding-top: 30px">
-      <div class="wrap split flip">
-        <div>
-          <div class="kicker reveal">Agentic haggling</div>
-          <h2 class="reveal">Your agent negotiates so you don't have to.</h2>
-          <p class="lead reveal">Each provider has its own agent with a private floor price. Yours opens low, meets them partway, and closes the deal. The agreed price goes straight into checkout.</p>
-        </div>
-        <div class="vis">
-          <div class="chat-demo">
-            <div class="msg buyer"><div class="who">Your agent</div>Could you do $21.60 for a 1-hour clean?</div>
-            <div class="msg seller"><div class="who">QuickTidy</div>We can't go that low, but I can offer $27.60.</div>
-            <div class="msg buyer"><div class="who">Your agent</div>I can bundle a repeat booking. How about $24.90?</div>
-            <div class="msg seller"><div class="who">QuickTidy</div>$26.26 is the best we can do. Deal.</div>
-          </div>
-          <div class="price-tick"><span>List price <s>$30.00</s></span><b>$26.26</b></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" style="padding-top: 30px">
-      <div class="wrap split">
-        <div>
-          <div class="kicker reveal">One checkout</div>
-          <h2 class="reveal">Seven services. One PayPal payment.</h2>
-          <p class="lead reveal">Everything you approve goes into a single PayPal order with a line item per service. Prices are checked on the server, so what you approved is what you pay.</p>
-        </div>
-        <div class="vis pay-vis">
-          <div class="pay-line"><span>Mama's Kitchen tiffin · 7 meals</span><b>$49.00</b></div>
-          <div class="pay-line"><span>EcoFold laundry</span><b>$26.00</b></div>
-          <div class="pay-line"><span>QuickTidy clean <small>(negotiated)</small></span><b>$26.26</b></div>
-          <div class="pay-line"><span>+ 4 more</span><b>$48.50</b></div>
-          <div class="pp-btn">PayPal</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ---------- parallax quote band ---------- -->
-    <section class="band">
-      <div class="bg" data-speed="0.35"><span>14.6 hours</span></div>
-      <div class="wrap">
-        <blockquote class="reveal">"$150 bought back <em>14.6 hours</em> of exam week."</blockquote>
-        <div class="cite reveal" style="--d:120ms">The exam-week demo plan, with one haggled deal</div>
-      </div>
-    </section>
-
+    <!-- ================= CTA ================= -->
     <section class="cta-final">
       <div class="wrap">
-        <h2 class="reveal">What would you do with 14 extra hours?</h2>
-        <p class="lead reveal" style="margin: 0 auto 28px">Describe your week and see your plan in seconds.</p>
-        <a class="big-link reveal" href="plan.html"><span class="primary">Plan my week →</span></a>
+        <div class="dmx xl" data-dot="14.6" data-decimals="1"><span class="u">hours</span></div>
+        <h2 class="reveal">What would you do<br>with them?</h2>
+        <div class="cta-actions reveal">
+          <a class="btn light" href="plan.html">Plan my week <span class="plus">+</span></a>
+          <a class="btn" href="#how">See how it works <span class="plus">→</span></a>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>Sandbox demo. Providers are simulated merchants; payments run through PayPal's sandbox.</footer>
+
+  <script src="shared/catalog.js"></script>
+  <script src="ui.js"></script>
   <script src="site.js"></script>
+  <script>
+    (function () {
+      const UI = window.TimeBackUI;
+      const cat = window.TIMEBACK_CATALOG;
+      UI.wave(document.getElementById('heroWave'), 0.62);
+
+      // One card per chore, with its best provider by hours per dollar.
+      const items = cat.tasks.map((t) => {
+        const opts = cat.providers.filter((p) => p.task === t.id);
+        const best = opts.slice().sort((a, b) => b.hoursSaved / b.price - a.hoursSaved / a.price)[0];
+        return { ...t, best, count: opts.length };
+      });
+      const player = document.getElementById('landingPlayer');
+      UI.coverflow(document.getElementById('landingFlow'), items, {
+        start: 1,
+        render: (it) => `${UI.art(it.category)}<div class="cf-meta"><b>${it.label}</b><span>${it.count} providers</span><span class="bars"><i></i><i></i><i></i><i></i><i></i></span></div>`,
+        onFocus: (it) => {
+          UI.setPalette(it.category);
+          const mpd = ((it.best.hoursSaved * 60) / it.best.price).toFixed(1);
+          player.innerHTML = `<div class="thumb">${UI.art(it.category)}</div>
+            <div class="info"><b>${it.best.provider}</b><span>Best for ${it.label.toLowerCase()} · saves ${it.best.hoursSaved}h · ${mpd} min per $</span>
+            <div class="track"><i style="width:${Math.min(100, (it.best.hoursSaved / it.selfHours) * 100)}%"></i></div></div>
+            <div class="acts"><a class="btn light" href="plan.html?q=${encodeURIComponent(`I want help with ${it.label.toLowerCase()} this week. Budget $100.`)}">Plan <span class="plus">+</span></a></div>`;
+        },
+      });
+    })();
+  </script>
 </body>
 </html>

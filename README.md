@@ -27,6 +27,17 @@ Built for *Build What's Next with PayPal and AI*.
 | `plan.html` (Planner) | The agent's live plan: free-hours card, AG Grid options, haggling drawer, week view and PayPal checkout. |
 | `booked.html` (Booked) | Confirmation after payment: hours bought back, what was booked and when, and the PayPal order details. |
 
+## Design
+
+- **Ombre glass UI:** frosted glass cards over a smoky ombre backdrop, with color blooms inside the stat tiles.
+- **Dynamic palette:** each chore category (food, home, errands, travel, study) has its own palette. When a service is in focus in a carousel, the whole page background shifts to its colors.
+- **Dot-matrix numerals:** key numbers (free hours, money, ratios) are rendered as LED-style dot grids that morph between values.
+- **Coverflow carousels:** 3D card carousels for chores (Home), your picks (Planner) and your booked week (Booked), with a player-style detail bar.
+- **Instrument controls:** tick-ruler gauges with a marker, a draggable budget ruler, a live wave line, day pills and an on/off switch.
+- **Motion:** parallax phone mockups in the hero, scroll reveals, page transitions, and reduced-motion support.
+
+All UI components live in `public/ui.js` with no dependencies.
+
 ## Demo flow (about 2 minutes)
 
 1. Click **Exam week**, then **Plan my week** → "14.2 hours freed for $148."
@@ -106,7 +117,8 @@ src/ai.js            Claude calls: request parsing, plan explanation, negotiatio
 src/paypal.js        PayPal OAuth, create order, capture order
 data/providers.json  Simulated sandbox service providers
 public/              Front end: index.html (home), plan.html (planner), booked.html (confirmation),
-                     app.js (planner logic), site.js (page transitions, parallax, scroll reveal)
+                     app.js (planner logic), ui.js (dot-matrix, coverflow, rulers, wave, dynamic palette),
+                     site.js (page transitions, parallax, scroll reveal)
 public/shared/       Code shared by server and browser: optimizer (multiple-choice knapsack +
                      rescheduling), negotiation engine, offline engine, generated catalog
 scripts/             build-catalog.js (copies data/providers.json for the browser)

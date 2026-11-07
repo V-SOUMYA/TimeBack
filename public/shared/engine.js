@@ -86,7 +86,7 @@
     await new Promise((r) => setTimeout(r, 120));
     if (path === '/api/config') {
       return { aiEnabled: false, model: null, paypalEnabled: false, paypalClientId: null, currency: 'USD', offline: true,
-        tasks: catalog.tasks.map(({ id, label, selfHours }) => ({ id, label, selfHours })) };
+        tasks: catalog.tasks.map(({ id, label, selfHours, category }) => ({ id, label, selfHours, category })) };
     }
     if (path === '/api/plan') {
       const request = parse(String(body.text || ''));

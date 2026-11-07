@@ -67,7 +67,7 @@ app.get('/api/config', (_req, res) => {
     paypalEnabled: paypal.paypalEnabled(),
     paypalClientId: process.env.PAYPAL_CLIENT_ID || null,
     currency: process.env.CURRENCY || 'USD',
-    tasks: catalog.tasks.map(({ id, label, selfHours }) => ({ id, label, selfHours })),
+    tasks: catalog.tasks.map(({ id, label, selfHours, category }) => ({ id, label, selfHours, category })),
   });
 });
 

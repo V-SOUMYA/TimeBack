@@ -15,103 +15,127 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="site.css" />
 </head>
-<body>
-  <div class="aurora" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="grain"></div></div>
+<body class="plan">
+  <div class="backdrop" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
   <div class="progress" aria-hidden="true"></div>
-  <header class="top">
-    <a class="brand" href="index.html"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></span> TimeBack</a>
+
+  <header class="top glass">
+    <a class="brand" href="index.html"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></span>TimeBack</a>
     <div class="top-right">
       <div class="badges" id="badges"></div>
       <nav class="nav">
         <a href="index.html">Home</a>
-        <a href="index.html#how">How it works</a>
         <a href="plan.html">Planner</a>
       </nav>
     </div>
   </header>
 
-  <main>
-    <section class="plan-head">
-      <div>
-        <div class="crumbs reveal"><a href="index.html">Home</a> / Planner</div>
-        <h1 class="plan-title reveal" style="--d:60ms">Your week, planned.</h1>
-        <p class="sub reveal" style="--d:120ms">Edit your request any time and re-plan. Then fine-tune the options below, haggle, and book.</p>
-        <div class="ask reveal" style="--d:180ms">
-          <textarea id="prompt" rows="3" aria-label="Describe your week">I have two exams next week and $150. Help me free up as much time as possible. I'd like greener options if they're close in price, and I want to keep doing my own commute.</textarea>
-          <div class="ask-actions">
-            <div class="examples" id="examples"></div>
-            <button id="planBtn" class="primary">Plan my week</button>
-          </div>
+  <main class="page">
+    <!-- ============ request + live plan card ============ -->
+    <section class="plan-top">
+      <div class="ask-card glass reveal">
+        <div class="crumbs"><a class="back" href="index.html" aria-label="Back to home">←</a>Planner</div>
+        <h1 class="page-title">Your week,<br>planned.</h1>
+        <textarea id="prompt" rows="3" aria-label="Describe your week">I have two exams next week and $150. Help me free up as much time as possible. I'd like greener options if they're close in price, and I want to keep doing my own commute.</textarea>
+        <div class="ask-actions">
+          <div class="examples" id="examples"></div>
+          <button id="planBtn" class="btn light">Plan my week <span class="plus">+</span></button>
         </div>
       </div>
 
-      <aside class="hero-card reveal" style="--d:160ms" id="heroCard" aria-live="polite">
-        <div class="hc-top">
-          <span class="hc-label">Free time this week</span>
-          <span class="hc-tag" id="hcTag">Planning…</span>
+      <aside class="hero-card glass reveal" style="--d:120ms" id="heroCard" aria-live="polite">
+        <div class="hc-top"><span class="hc-label">Free time this week</span><span class="tag" id="hcTag">Planning…</span></div>
+        <div class="hc-figure">
+          <div class="dmx xl" id="hcAfter"><span class="u">h</span></div>
+          <div class="hc-meta"><b id="hcDelta">+0h</b>up from <span id="hcBefore">--</span>h</div>
         </div>
-        <div class="hc-main">
-          <div class="ring">
-            <svg viewBox="0 0 120 120"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4ff0b0"/><stop offset="1" stop-color="#4ff0b0"/></linearGradient></defs>
-              <circle class="track" cx="60" cy="60" r="52" fill="none" stroke-width="10"/>
-              <circle class="prog" id="ringProg" cx="60" cy="60" r="52" fill="none" stroke-width="10" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
-            <div class="ring-label"><div><b id="ringVal">0</b><span>hours back</span></div></div>
-          </div>
-          <div>
-            <div class="hc-big"><span id="hcBefore">--</span><span class="hc-unit">h</span><span class="hc-arrow">→</span><span id="hcAfter" class="hc-after">--</span><span class="hc-unit">h</span></div>
-            <div class="hc-delta" id="hcDelta">&nbsp;</div>
-          </div>
-        </div>
-        <div class="strip" id="strip"></div>
-        <div class="legend"><span><i class="lg busy"></i>Commitments</span><span><i class="lg chore"></i>Chores</span><span><i class="lg freed"></i>Bought back</span></div>
+        <div class="wave" id="hcWave"></div>
         <ol class="steps" id="steps"></ol>
       </aside>
     </section>
 
     <section id="results" class="hidden">
-      <div class="stats">
-        <div class="stat hero-stat reveal"><span class="label">Hours bought back</span><span class="value" id="statHours">0</span></div>
-        <div class="stat reveal" style="--d:80ms"><span class="label">Spent</span><span class="value" id="statSpent">$0</span><span class="hint" id="statBudget"></span></div>
-        <div class="stat reveal" style="--d:160ms"><span class="label">Minutes per dollar</span><span class="value" id="statRate">0</span></div>
-        <div class="stat reveal" style="--d:240ms"><span class="label">Saved by haggling</span><span class="value" id="statHaggle">$0</span></div>
+      <!-- ============ ombre bento stats ============ -->
+      <div class="bento">
+        <div class="tile omb o-pink breathe span-2 reveal">
+          <div class="t-label">Hours bought back</div>
+          <div class="dmx lg" id="statHours"><span class="u">h</span></div>
+          <div class="t-foot"><span>Time you get back</span></div>
+        </div>
+        <div class="tile omb o-sage breathe span-2 reveal" style="--d:80ms">
+          <div class="t-label">Paid with PayPal</div>
+          <div class="dmx lg" id="statSpent"></div>
+          <div class="t-foot"><span id="statBudget"></span></div>
+        </div>
+        <div class="tile omb o-peach breathe span-2 reveal" style="--d:160ms">
+          <div class="t-label">Saved by haggling</div>
+          <div class="dmx lg" id="statHaggle"></div>
+          <div class="t-foot"><span>Agent vs agent</span></div>
+        </div>
+        <div class="tile glass span-3 reveal" style="--d:120ms">
+          <div class="t-label">Minutes per dollar</div>
+          <div class="dmx lg" id="statRate"></div>
+          <div class="ruler" id="rateRuler" data-ticks="41"></div>
+          <div class="t-foot"><span>Low value</span><span>High value</span></div>
+        </div>
+        <div class="tile glass span-3 budget-tile reveal" style="--d:200ms">
+          <div class="t-label">Budget · drag to change</div>
+          <div class="row"><div class="dmx lg" id="budgetDm"></div>
+            <label class="switch"><input type="checkbox" id="ecoToggle" /><span class="sw"></span>Prefer eco</label></div>
+          <div class="ruler" id="budgetRuler" data-ticks="41"><input type="range" id="budgetInput" min="20" max="400" step="5" aria-label="Budget in dollars" /></div>
+          <div class="t-foot"><span>$20</span><span>$400</span></div>
+        </div>
       </div>
 
-      <div class="agent-note reveal">
-        <div class="avatar">AI</div>
+      <div class="agent-note glass reveal">
+        <div class="avatar" aria-hidden="true"></div>
         <div>
           <div class="note-title">TimeBack's plan <span class="pill" id="sourcePill"></span></div>
           <p id="explanation"></p>
         </div>
       </div>
 
-      <div class="panel reveal">
+      <!-- ============ picks coverflow ============ -->
+      <div class="panel glass reveal">
+        <div class="panel-head">
+          <div><h2>Your picks</h2><p class="muted">Flip through what TimeBack chose. The page takes on each service's colors.</p></div>
+        </div>
+        <div id="picks" tabindex="0"></div>
+        <div class="player glass light" id="pickInfo"></div>
+      </div>
+
+      <!-- ============ AG Grid ============ -->
+      <div class="panel glass reveal">
         <div class="panel-head">
           <div>
-            <h2>Your options</h2>
-            <p class="muted">Tick to lock an option in, untick to drop it. Change the budget and TimeBack re-plans instantly. Click <b>Haggle</b> to let your agent negotiate.</p>
+            <h2>All options</h2>
+            <p class="muted">Tick to lock an option in, untick to drop it. TimeBack re-plans instantly. Click <b>Haggle</b> to let your agent negotiate.</p>
           </div>
           <div class="controls">
-            <label class="budget">Budget $<input id="budgetInput" type="number" min="1" step="5" /></label>
-            <label class="toggle"><input type="checkbox" id="ecoToggle" /> Prefer eco</label>
-            <input id="quickFilter" type="search" placeholder="Filter…" aria-label="Filter options" />
+            <input id="quickFilter" type="search" placeholder="Filter options…" aria-label="Filter options" />
             <button id="resetBtn" class="ghost">Reset</button>
           </div>
         </div>
-        <div id="grid" class="ag-theme-quartz grid"></div>
+        <div id="grid" class="ag-theme-quartz-dark grid"></div>
       </div>
 
+      <!-- ============ week + checkout ============ -->
       <div class="two-col">
-        <div class="panel reveal">
-          <h2>Your week</h2>
-          <p class="muted">Pink blocks are your fixed commitments. Dark green blocks are handled for you.</p>
-          <div id="week" class="week"></div>
+        <div class="panel glass reveal">
+          <div class="week-head">
+            <h2>Your week</h2>
+            <div class="daypills" id="dayPills"></div>
+          </div>
+          <div class="week-bars" id="weekBars"></div>
+          <ul class="day-list" id="dayList"></ul>
         </div>
-        <div class="panel checkout reveal" style="--d:120ms">
+        <div class="panel glass checkout reveal" style="--d:120ms">
           <h2>Book it</h2>
           <div id="cart"></div>
           <div id="paypal-buttons"></div>
-          <button id="demoPay" class="primary pay hidden">Pay with PayPal (demo mode)</button>
-          <div id="receipt" class="hidden"></div>
+          <button id="demoPay" class="btn pay hidden">Pay with PayPal (demo)</button>
+          <div id="receipt" class="glass light hidden"></div>
         </div>
       </div>
     </section>
@@ -123,7 +147,11 @@
         <h3 id="drawerTitle">Negotiating…</h3>
         <button id="drawerClose" class="ghost">Close</button>
       </div>
-      <div class="vs"><div class="side buyer">Your agent<b id="vsBuyer">–</b></div><span class="x">VS</span><div class="side seller"><span id="vsSellerName">Seller</span><b id="vsSeller">–</b></div></div>
+      <div class="vs">
+        <div class="side omb o-lilac breathe"><span>Your agent</span><div class="dmx" id="vsBuyer"></div></div>
+        <span class="x">VS</span>
+        <div class="side omb o-peach breathe"><span id="vsSellerName">Seller</span><div class="dmx" id="vsSeller"></div></div>
+      </div>
       <div id="chat" class="chat"></div>
       <div id="dealSummary" class="deal"></div>
     </div>
@@ -133,7 +161,6 @@
 
   <script src="/vendor/ag-grid/dist/ag-grid-community.min.js"></script>
   <script>
-    // Fallbacks when the page isn't served by the TimeBack server.
     if (!window.agGrid) document.write('<script src="../node_modules/ag-grid-community/dist/ag-grid-community.min.js"><\/script>');
   </script>
   <script>
@@ -143,6 +170,7 @@
   <script src="shared/optimizer.js"></script>
   <script src="shared/negotiate.js"></script>
   <script src="shared/engine.js"></script>
+  <script src="ui.js"></script>
   <script src="site.js"></script>
   <script src="app.js"></script>
 </body>
