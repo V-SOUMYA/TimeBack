@@ -53,7 +53,8 @@ function goOffline(path, body) {
 
 // ---------- init ----------
 async function init() {
-  setupReveal();
+  const q = new URLSearchParams(location.search).get('q');
+  if (q) $('prompt').value = q.slice(0, 2000);
   state.config = await api('/api/config');
   $('badges').innerHTML = state.config.offline
     ? badge('Offline demo · run npm start for Claude + PayPal', false)
@@ -112,6 +113,7 @@ async function plan({ auto = false } = {}) {
     state.booked = false;
     $('receipt').classList.add('hidden');
     const [data] = await Promise.all([api('/api/plan', { text: $('prompt').value }), sleep(700)]);
+    try { history.replaceState(null, '', `?q=${encodeURIComponent($('prompt').value)}`); } catch (e) { /* file:// may refuse */ }
     first.classList.remove('live');
     first.textContent = 'Read your week';
 
@@ -554,54 +556,25 @@ async function demoCheckout() {
 function onBooked(result) {
   state.booked = true;
   render({ plan: state.plan });
-  $('receipt').classList.remove('hidden');
-  $('receipt').innerHTML = `
-    <div class="receipt-big">${state.plan.hoursSaved} hours bought back</div>
-    <p>Payment <b>${result.status}</b>${result.demo ? ' (demo)' : ''} · ${money(result.total ?? state.plan.spent)}</p>
-    <p class="muted">PayPal order ${escapeHtml(result.id)}${result.captureId ? ` · capture ${escapeHtml(result.captureId)}` : ''}</p>`;
-  state.gridApi.refreshCells({ force: true });
-  $('receipt').scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-// Small dependency-free confetti burst.
-function confetti() {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const c = $('confetti');
-  const ctx = c.getContext('2d');
-  c.width = innerWidth * devicePixelRatio;
-  c.height = innerHeight * devicePixelRatio;
-  ctx.scale(devicePixelRatio, devicePixelRatio);
-  const colors = ['#4ff0b0', '#5cc8ff', '#8b6cff', '#ffb547', '#ff6b8b', '#ffc439'];
-  const parts = Array.from({ length: 160 }, () => ({
-    x: innerWidth / 2 + (Math.random() - 0.5) * 200,
-    y: innerHeight * 0.55,
-    vx: (Math.random() - 0.5) * 14,
-    vy: -Math.random() * 15 - 6,
-    s: Math.random() * 6 + 4,
-    r: Math.random() * Math.PI,
-    vr: (Math.random() - 0.5) * 0.3,
-    c: colors[(Math.random() * colors.length) | 0],
-  }));
-  const t0 = performance.now();
-  const tick = (now) => {
-    ctx.clearRect(0, 0, innerWidth, innerHeight);
-    parts.forEach((p) => {
-      p.vy += 0.4; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c;
-      ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); ctx.restore();
-    });
-    if (now - t0 < 3200) requestAnimationFrame(tick);
-    else ctx.clearRect(0, 0, innerWidth, innerHeight);
+  const chosen = state.plan.rows.filter((r) => ['Recommended', 'Booked'].includes(r.status));
+  const booking = {
+    hoursSaved: state.plan.hoursSaved,
+    spent: result.total ?? state.plan.spent,
+    haggled: Object.values(state.deals).reduce((s, d) => s + d.saved, 0),
+    status: result.status,
+    demo: Boolean(result.demo),
+    orderId: result.id,
+    captureId: result.captureId || null,
+    items: chosen
+      .sort((x, y) => x.slot.day - y.slot.day || x.slot.start - y.slot.start)
+      .map((r) => ({ task: r.taskLabel, provider: r.provider, price: r.price, when: r.slotLabel, hours: r.hoursSaved, deal: Boolean(r.dealId) })),
   };
-  requestAnimationFrame(tick);
-}
-
-// Fade sections in as they scroll into view.
-function setupReveal() {
-  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
-    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-  }), { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  try { sessionStorage.setItem('timeback:booking', JSON.stringify(booking)); } catch (e) { /* private mode */ }
+  $('hcTag').textContent = 'Booked';
+  $('receipt').classList.remove('hidden');
+  $('receipt').innerHTML = '<div class="receipt-big">Payment complete</div><p>Opening your confirmation…</p>';
+  const href = `booked.html#${encodeURIComponent(JSON.stringify(booking))}`;
+  setTimeout(() => (window.TimeBackNav ? window.TimeBackNav.go(href) : (location.href = href)), 700);
 }
 
 // ---------- utils ----------

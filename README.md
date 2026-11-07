@@ -19,6 +19,14 @@ Built for *Build What's Next with PayPal and AI*.
 5. **Haggles for you.** Click **Haggle** and your buyer agent negotiates with the provider's seller agent. The seller has a hidden floor price. The agreed price is stored server-side and flows straight into checkout.
 6. **Books with PayPal.** One PayPal Orders v2 checkout with a line item per service. After capture, the rows flip to **Booked** and you see how many hours you bought back.
 
+## Pages
+
+| Page | What it does |
+|---|---|
+| `index.html` (Home) | Landing page with a parallax hero, a "How it works" timeline, feature sections and the request box. "Plan my week" opens the planner with your request. |
+| `plan.html` (Planner) | The agent's live plan: free-hours card, AG Grid options, haggling drawer, week view and PayPal checkout. |
+| `booked.html` (Booked) | Confirmation after payment: hours bought back, what was booked and when, and the PayPal order details. |
+
 ## Demo flow (about 2 minutes)
 
 1. Click **Exam week**, then **Plan my week** → "14.2 hours freed for $148."
@@ -97,7 +105,8 @@ server.js            Express API: /api/plan, /api/optimize, /api/negotiate, /api
 src/ai.js            Claude calls: request parsing, plan explanation, negotiation lines (+ fallback)
 src/paypal.js        PayPal OAuth, create order, capture order
 data/providers.json  Simulated sandbox service providers
-public/              Front end (AG Grid, week view, PayPal buttons)
+public/              Front end: index.html (home), plan.html (planner), booked.html (confirmation),
+                     app.js (planner logic), site.js (page transitions, parallax, scroll reveal)
 public/shared/       Code shared by server and browser: optimizer (multiple-choice knapsack +
                      rescheduling), negotiation engine, offline engine, generated catalog
 scripts/             build-catalog.js (copies data/providers.json for the browser)

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booked · TimeBack</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="site.css" />
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="top">
+    <a class="brand" href="index.html"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></span> TimeBack</a>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="plan.html">Planner</a>
+    </nav>
+  </header>
+
+  <main class="booked" id="booked">
+    <section class="booked-hero">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h1 class="reveal" style="--d:200ms">You bought back <span class="grad"><span id="bHours">0</span> hours.</span></h1>
+      <p class="reveal" style="--d:300ms" id="bSub">Your services are booked and paid with PayPal.</p>
+    </section>
+
+    <div class="b-stats">
+      <div class="stat hero-stat reveal" style="--d:350ms"><span class="label">Hours bought back</span><span class="value" id="bStatHours">0</span></div>
+      <div class="stat reveal" style="--d:430ms"><span class="label">Paid with PayPal</span><span class="value" id="bSpent">$0</span></div>
+      <div class="stat reveal" style="--d:510ms"><span class="label">Saved by haggling</span><span class="value" id="bHaggle">$0</span></div>
+    </div>
+
+    <div class="panel reveal" style="--d:560ms">
+      <h2>Your week, handled</h2>
+      <p class="muted">Everything below is scheduled around your commitments.</p>
+      <ul class="b-list" id="bList"></ul>
+      <div class="b-meta" id="bMeta"></div>
+    </div>
+
+    <div class="b-actions reveal" style="--d:640ms">
+      <a href="plan.html"><span class="primary" style="display:inline-block">Plan another week</span></a>
+      <a class="ghost-link" href="index.html">Back to home</a>
+    </div>
+  </main>
+
+  <footer>Sandbox demo. Providers are simulated merchants; payments run through PayPal's sandbox.</footer>
+  <script src="site.js"></script>
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const money = (n) => `$${Number(n).toFixed(2)}`;
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      let b = null;
+      try { b = JSON.parse(decodeURIComponent(location.hash.slice(1))); } catch (e) { /* no hash */ }
+      if (!b) { try { b = JSON.parse(sessionStorage.getItem('timeback:booking')); } catch (e) { /* storage blocked */ } }
+      if (!b || !Array.isArray(b.items)) {
+        $('booked').innerHTML = '<section class="booked-hero" style="padding:80px 0"><h1>No booking yet.</h1><p>Plan your week first, then book it with PayPal.</p><div class="b-actions"><a href="plan.html"><span class="primary" style="display:inline-block">Plan my week</span></a></div></section>';
+        return;
+      }
+      const count = (el, target, fmt) => {
+        const t0 = performance.now();
+        const tick = (now) => {
+          const k = Math.min(1, (now - t0) / 1300);
+          el.textContent = fmt(target * (1 - Math.pow(1 - k, 3)));
+          if (k < 1) requestAnimationFrame(tick);
+        };
+        setTimeout(() => requestAnimationFrame(tick), 350);
+      };
+      count($('bHours'), b.hoursSaved, (v) => v.toFixed(1));
+      count($('bStatHours'), b.hoursSaved, (v) => `${v.toFixed(1)}h`);
+      count($('bSpent'), b.spent, money);
+      count($('bHaggle'), b.haggled || 0, money);
+      $('bSub').textContent = `${b.items.length} services booked and paid in one PayPal checkout${b.demo ? ' (demo mode)' : ''}.`;
+      $('bList').innerHTML = b.items.map((it, i) => `
+        <li style="--d:${600 + i * 80}ms">
+          <span class="when">${esc(it.when)}</span>
+          <span>${esc(it.task)}<small>${esc(it.provider)}${it.deal ? ' · negotiated' : ''} · saves ${it.hours}h</small></span>
+          <b>${money(it.price)}</b>
+        </li>`).join('');
+      $('bMeta').textContent = `PayPal order ${b.orderId}${b.captureId ? ` · capture ${b.captureId}` : ''} · status ${b.status}`;
+      if (window.TimeBackReveal) window.TimeBackReveal();
+    })();
+  </script>
+</body>
+</html>

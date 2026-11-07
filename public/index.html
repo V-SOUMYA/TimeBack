@@ -4,137 +4,168 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TimeBack · Buy back your week</title>
-  <script>
-    // If the page isn't served by the TimeBack server, try node_modules, then the CDN.
-    function tbFallback(el) { const list = (el.dataset.fallbacks || '').split(' ').filter(Boolean); if (!list.length) return; el.dataset.fallbacks = list.slice(1).join(' '); el.href = list[0]; }
-  </script>
+  <meta name="description" content="An AI agent that plans which chores to hand off, haggles for better prices, and books it all with PayPal." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/vendor/ag-grid/styles/ag-grid.css" data-fallbacks="../node_modules/ag-grid-community/styles/ag-grid.css https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-grid.css" onerror="tbFallback(this)" />
-  <link rel="stylesheet" href="/vendor/ag-grid/styles/ag-theme-quartz.css" data-fallbacks="../node_modules/ag-grid-community/styles/ag-theme-quartz.css https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-theme-quartz.css" onerror="tbFallback(this)" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="site.css" />
 </head>
-<body>
-  <div class="aurora" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="grain"></div></div>
-  <canvas id="confetti" aria-hidden="true"></canvas>
+<body class="landing">
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"></div>
   <header class="top">
-    <div class="brand"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></span> TimeBack</div>
-    <div class="badges" id="badges"></div>
+    <a class="brand" href="index.html"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></span> TimeBack</a>
+    <nav class="nav">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="plan.html">Planner</a>
+      <a class="cta" href="plan.html">Plan my week</a>
+    </nav>
   </header>
 
   <main>
-    <section class="hero">
-      <div class="hero-left">
-        <div class="eyebrow reveal"><span class="dot"></span>AI agent · hours per dollar · PayPal checkout</div>
-        <h1 class="reveal" style="--d:80ms">Buy back <span class="grad">your week.</span></h1>
-        <p class="sub reveal" style="--d:160ms">Tell TimeBack what's coming up and what you can spend. It picks the chores worth handing off, haggles for better prices, fits everything around your plans, and books it all with PayPal.</p>
-        <div class="ask reveal" style="--d:240ms">
-          <textarea id="prompt" rows="3" aria-label="Describe your week">I have two exams next week and $150. Help me free up as much time as possible. I'd like greener options if they're close in price, and I want to keep doing my own commute.</textarea>
-          <div class="ask-actions">
-            <div class="examples" id="examples"></div>
-            <button id="planBtn" class="primary">Plan my week</button>
+    <!-- ---------- hero with parallax scene ---------- -->
+    <section class="l-hero">
+      <div class="wrap">
+        <div>
+          <div class="eyebrow reveal"><span class="dot"></span>AI agent · hours per dollar · PayPal checkout</div>
+          <h1 class="reveal" style="--d:80ms">Buy back <span class="grad">your week.</span></h1>
+          <p class="sub reveal" style="--d:160ms">Tell TimeBack what's coming up and what you can spend. It picks the chores worth handing off, haggles for better prices, fits everything around your plans, and books it all with PayPal.</p>
+          <form class="ask reveal" style="--d:240ms" action="plan.html" method="get">
+            <textarea name="q" rows="3" aria-label="Describe your week">I have two exams next week and $150. Help me free up as much time as possible. I'd like greener options if they're close in price, and I want to keep doing my own commute.</textarea>
+            <div class="ask-actions">
+              <div class="examples">
+                <a class="chip" href="plan.html?q=Work%20deadline%20Thursday%2C%20%2480%20to%20spend.%20I%20hate%20laundry%20and%20cleaning.">Work crunch</a>
+                <a class="chip" href="plan.html?q=New%20parent%2C%20no%20sleep%2C%20%24250%20budget.%20Food%20and%20home%20stuff%20please%2C%20only%20well-rated%20services.">New parent</a>
+              </div>
+              <button type="submit" class="primary">Plan my week →</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="scene" aria-hidden="true">
+          <div class="layer rings" data-depth="6" data-speed="0.12">
+            <svg viewBox="0 0 520 520">
+              <circle cx="260" cy="260" r="250" stroke-opacity=".10" stroke-width="1.5"/>
+              <circle cx="260" cy="260" r="200" stroke-opacity=".14" stroke-width="1.5" stroke-dasharray="4 10"/>
+              <circle cx="260" cy="260" r="150" stroke-opacity=".10" stroke-width="1.5"/>
+              <line x1="260" y1="10" x2="260" y2="40" stroke="#23443a" stroke-opacity=".25" stroke-width="3"/>
+              <line x1="510" y1="260" x2="480" y2="260" stroke="#23443a" stroke-opacity=".25" stroke-width="3"/>
+              <line x1="260" y1="510" x2="260" y2="480" stroke="#23443a" stroke-opacity=".25" stroke-width="3"/>
+              <line x1="10" y1="260" x2="40" y2="260" stroke="#23443a" stroke-opacity=".25" stroke-width="3"/>
+            </svg>
           </div>
+
+          <div class="layer big-card" data-depth="10" data-speed="0.05">
+            <div class="lbl">Free time this week</div>
+            <div class="num"><span data-count="95.2" data-decimals="1">0</span><small>h</small></div>
+            <div class="delta">+14.2 hours for $148</div>
+            <div class="mini-bars">
+              <i style="height:55%;animation-delay:.1s"></i><i style="height:80%;animation-delay:.18s"></i><i style="height:60%;animation-delay:.26s"></i>
+              <i style="height:85%;animation-delay:.34s"></i><i style="height:62%;animation-delay:.42s"></i><i style="height:58%;animation-delay:.5s"></i><i style="height:64%;animation-delay:.58s"></i>
+            </div>
+          </div>
+
+          <div class="layer float f1" data-depth="22" data-speed="0.22"><span class="ic clay">+</span><span><b>Laundry handed off</b><small>+2.3 hours · EcoFold</small></span></div>
+          <div class="layer float f2" data-depth="-18" data-speed="0.32"><span class="ic forest">%</span><span><b>Deal: $30 → $26.26</b><small>Your agent haggled</small></span></div>
+          <div class="layer float f3" data-depth="-26" data-speed="0.18"><span class="ic plum">↻</span><span><b>Moved after Exam 1</b><small>No clashes</small></span></div>
+          <div class="layer float f4" data-depth="16" data-speed="0.28"><span class="ic pay">Pay</span><span><b>Paid with PayPal</b><small>One checkout · 7 services</small></span></div>
         </div>
       </div>
-
-      <aside class="hero-card reveal" style="--d:200ms" id="heroCard" aria-live="polite">
-        <div class="hc-top">
-          <span class="hc-label">Free time this week</span>
-          <span class="hc-tag" id="hcTag">Planning…</span>
-        </div>
-        <div class="hc-main">
-          <div class="ring">
-            <svg viewBox="0 0 120 120"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4ff0b0"/><stop offset="1" stop-color="#4ff0b0"/></linearGradient></defs>
-              <circle class="track" cx="60" cy="60" r="52" fill="none" stroke-width="10"/>
-              <circle class="prog" id="ringProg" cx="60" cy="60" r="52" fill="none" stroke-width="10" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
-            <div class="ring-label"><div><b id="ringVal">0</b><span>hours back</span></div></div>
-          </div>
-          <div>
-            <div class="hc-big"><span id="hcBefore">--</span><span class="hc-unit">h</span><span class="hc-arrow">→</span><span id="hcAfter" class="hc-after">--</span><span class="hc-unit">h</span></div>
-            <div class="hc-delta" id="hcDelta">&nbsp;</div>
-          </div>
-        </div>
-        <div class="strip" id="strip"></div>
-        <div class="legend"><span><i class="lg busy"></i>Commitments</span><span><i class="lg chore"></i>Chores</span><span><i class="lg freed"></i>Bought back</span></div>
-        <ol class="steps" id="steps"></ol>
-      </aside>
+      <a class="scroll-hint" href="#how"><i></i>Scroll</a>
     </section>
 
-    <section id="results" class="hidden">
-      <div class="stats">
-        <div class="stat hero-stat reveal"><span class="label">Hours bought back</span><span class="value" id="statHours">0</span></div>
-        <div class="stat reveal" style="--d:80ms"><span class="label">Spent</span><span class="value" id="statSpent">$0</span><span class="hint" id="statBudget"></span></div>
-        <div class="stat reveal" style="--d:160ms"><span class="label">Minutes per dollar</span><span class="value" id="statRate">0</span></div>
-        <div class="stat reveal" style="--d:240ms"><span class="label">Saved by haggling</span><span class="value" id="statHaggle">$0</span></div>
+    <!-- ---------- how it works ---------- -->
+    <section class="section" id="how">
+      <div class="wrap">
+        <div class="kicker reveal">How it works</div>
+        <h2 class="reveal">From "I'm swamped" to a booked week in four steps.</h2>
+        <p class="lead reveal">You describe your week in plain words. The agent does the rest, and you stay in control at every step.</p>
+        <div class="steps-line">
+          <span class="fill"></span>
+          <div class="step-card"><span class="n">1</span><div><h3>Tell it about your week</h3><p>"Two exams, $150, I want to keep my own commute." Claude turns that into a budget, tasks and fixed commitments.</p></div><span class="tag">AI understands</span></div>
+          <div class="step-card"><span class="n">2</span><div><h3>It finds the best hours per dollar</h3><p>An exact optimizer compares every provider and picks the mix that frees the most time within budget.</p></div><span class="tag">Optimal plan</span></div>
+          <div class="step-card"><span class="n">3</span><div><h3>Your agent haggles</h3><p>Click Haggle and your buyer agent negotiates with each provider's agent for a lower price.</p></div><span class="tag">Agent vs agent</span></div>
+          <div class="step-card"><span class="n">4</span><div><h3>Book everything with PayPal</h3><p>One checkout pays for every service. Deliveries are scheduled around your exams.</p></div><span class="tag">PayPal checkout</span></div>
+        </div>
       </div>
+    </section>
 
-      <div class="agent-note reveal">
-        <div class="avatar">AI</div>
+    <!-- ---------- features ---------- -->
+    <section class="section" id="features" style="padding-top: 40px">
+      <div class="wrap split">
         <div>
-          <div class="note-title">TimeBack's plan <span class="pill" id="sourcePill"></span></div>
-          <p id="explanation"></p>
+          <div class="kicker reveal">Hours per dollar</div>
+          <h2 class="reveal">The cheapest option isn't always the best one.</h2>
+          <p class="lead reveal">TimeBack ranks every option by how much of your life it gives back for each dollar. A $49 meal plan that saves 5.6 hours beats a $29 kit that saves 2.5.</p>
+        </div>
+        <div class="vis">
+          <div class="compare">
+            <div class="cmp-row win"><span>Campus Pantry</span><span class="track"><i style="--w:100%"></i></span><b>10.5 min/$</b></div>
+            <div class="cmp-row"><span>FreshCart</span><span class="track"><i style="--w:79%"></i></span><span>8.3 min/$</span></div>
+            <div class="cmp-row win"><span>Mama's Kitchen</span><span class="track"><i style="--w:66%"></i></span><b>6.9 min/$</b></div>
+            <div class="cmp-row"><span>StudentChef kit</span><span class="track"><i style="--w:50%"></i></span><span>5.2 min/$</span></div>
+          </div>
+          <div class="cmp-note">Minutes of your time saved per dollar spent.</div>
         </div>
       </div>
+    </section>
 
-      <div class="panel reveal">
-        <div class="panel-head">
-          <div>
-            <h2>Your options</h2>
-            <p class="muted">Tick to lock an option in, untick to drop it. Change the budget and TimeBack re-plans instantly. Click <b>Haggle</b> to let your agent negotiate.</p>
-          </div>
-          <div class="controls">
-            <label class="budget">Budget $<input id="budgetInput" type="number" min="1" step="5" /></label>
-            <label class="toggle"><input type="checkbox" id="ecoToggle" /> Prefer eco</label>
-            <input id="quickFilter" type="search" placeholder="Filter…" aria-label="Filter options" />
-            <button id="resetBtn" class="ghost">Reset</button>
-          </div>
+    <section class="section" style="padding-top: 30px">
+      <div class="wrap split flip">
+        <div>
+          <div class="kicker reveal">Agentic haggling</div>
+          <h2 class="reveal">Your agent negotiates so you don't have to.</h2>
+          <p class="lead reveal">Each provider has its own agent with a private floor price. Yours opens low, meets them partway, and closes the deal. The agreed price goes straight into checkout.</p>
         </div>
-        <div id="grid" class="ag-theme-quartz grid"></div>
+        <div class="vis">
+          <div class="chat-demo">
+            <div class="msg buyer"><div class="who">Your agent</div>Could you do $21.60 for a 1-hour clean?</div>
+            <div class="msg seller"><div class="who">QuickTidy</div>We can't go that low, but I can offer $27.60.</div>
+            <div class="msg buyer"><div class="who">Your agent</div>I can bundle a repeat booking. How about $24.90?</div>
+            <div class="msg seller"><div class="who">QuickTidy</div>$26.26 is the best we can do. Deal.</div>
+          </div>
+          <div class="price-tick"><span>List price <s>$30.00</s></span><b>$26.26</b></div>
+        </div>
       </div>
+    </section>
 
-      <div class="two-col">
-        <div class="panel reveal">
-          <h2>Your week</h2>
-          <p class="muted">Pink blocks are your fixed commitments. Dark green blocks are handled for you.</p>
-          <div id="week" class="week"></div>
+    <section class="section" style="padding-top: 30px">
+      <div class="wrap split">
+        <div>
+          <div class="kicker reveal">One checkout</div>
+          <h2 class="reveal">Seven services. One PayPal payment.</h2>
+          <p class="lead reveal">Everything you approve goes into a single PayPal order with a line item per service. Prices are checked on the server, so what you approved is what you pay.</p>
         </div>
-        <div class="panel checkout reveal" style="--d:120ms">
-          <h2>Book it</h2>
-          <div id="cart"></div>
-          <div id="paypal-buttons"></div>
-          <button id="demoPay" class="primary pay hidden">Pay with PayPal (demo mode)</button>
-          <div id="receipt" class="hidden"></div>
+        <div class="vis pay-vis">
+          <div class="pay-line"><span>Mama's Kitchen tiffin · 7 meals</span><b>$49.00</b></div>
+          <div class="pay-line"><span>EcoFold laundry</span><b>$26.00</b></div>
+          <div class="pay-line"><span>QuickTidy clean <small>(negotiated)</small></span><b>$26.26</b></div>
+          <div class="pay-line"><span>+ 4 more</span><b>$48.50</b></div>
+          <div class="pp-btn">PayPal</div>
         </div>
+      </div>
+    </section>
+
+    <!-- ---------- parallax quote band ---------- -->
+    <section class="band">
+      <div class="bg" data-speed="0.35"><span>14.6 hours</span></div>
+      <div class="wrap">
+        <blockquote class="reveal">"$150 bought back <em>14.6 hours</em> of exam week."</blockquote>
+        <div class="cite reveal" style="--d:120ms">The exam-week demo plan, with one haggled deal</div>
+      </div>
+    </section>
+
+    <section class="cta-final">
+      <div class="wrap">
+        <h2 class="reveal">What would you do with 14 extra hours?</h2>
+        <p class="lead reveal" style="margin: 0 auto 28px">Describe your week and see your plan in seconds.</p>
+        <a class="big-link reveal" href="plan.html"><span class="primary">Plan my week →</span></a>
       </div>
     </section>
   </main>
 
-  <div id="drawer" class="drawer hidden">
-    <div class="drawer-card">
-      <div class="drawer-head">
-        <h3 id="drawerTitle">Negotiating…</h3>
-        <button id="drawerClose" class="ghost">Close</button>
-      </div>
-      <div class="vs"><div class="side buyer">Your agent<b id="vsBuyer">–</b></div><span class="x">VS</span><div class="side seller"><span id="vsSellerName">Seller</span><b id="vsSeller">–</b></div></div>
-      <div id="chat" class="chat"></div>
-      <div id="dealSummary" class="deal"></div>
-    </div>
-  </div>
-
   <footer>Sandbox demo. Providers are simulated merchants; payments run through PayPal's sandbox.</footer>
-
-  <script src="/vendor/ag-grid/dist/ag-grid-community.min.js"></script>
-  <script>
-    // Fallbacks when the page isn't served by the TimeBack server.
-    if (!window.agGrid) document.write('<script src="../node_modules/ag-grid-community/dist/ag-grid-community.min.js"><\/script>');
-  </script>
-  <script>
-    if (!window.agGrid) document.write('<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/dist/ag-grid-community.min.js"><\/script>');
-  </script>
-  <script src="shared/catalog.js"></script>
-  <script src="shared/optimizer.js"></script>
-  <script src="shared/negotiate.js"></script>
-  <script src="shared/engine.js"></script>
-  <script src="app.js"></script>
+  <script src="site.js"></script>
 </body>
 </html>
