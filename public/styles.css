@@ -1,12 +1,12 @@
 /* =========================================================
    TimeBack · ombre glass design system
    ========================================================= */
-@property --p1 { syntax: '<color>'; inherits: true; initial-value: #c86fa3; }
-@property --p2 { syntax: '<color>'; inherits: true; initial-value: #8fb39a; }
-@property --p3 { syntax: '<color>'; inherits: true; initial-value: #3b3550; }
+@property --p1 { syntax: '<color>'; inherits: true; initial-value: #86bdf0; }
+@property --p2 { syntax: '<color>'; inherits: true; initial-value: #cfe4c9; }
+@property --p3 { syntax: '<color>'; inherits: true; initial-value: #2b4766; }
 
 :root {
-  --p1: #c86fa3; --p2: #8fb39a; --p3: #3b3550;
+  --p1: #86bdf0; --p2: #cfe4c9; --p3: #2b4766;
   --ink: #ffffff;
   --ink-2: rgba(255, 255, 255, .72);
   --ink-3: rgba(255, 255, 255, .5);

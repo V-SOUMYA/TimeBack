@@ -1,7 +1,7 @@
 {
   "_note": "Simulated sandbox providers for the demo. Prices and time savings are realistic estimates, not live listings.",
   "tasks": [
-    { "id": "groceries", "label": "Grocery shopping", "category": "food", "selfHours": 2.0, "keywords": ["grocer", "food", "shopping", "supermarket"] },
+    { "id": "groceries", "label": "Grocery shopping", "category": "grocery", "selfHours": 2.0, "keywords": ["grocer", "food", "shopping", "supermarket"] },
     { "id": "mealprep", "label": "Cooking & meal prep", "category": "food", "selfHours": 6.0, "keywords": ["cook", "meal", "dinner", "lunch", "food"] },
     { "id": "laundry", "label": "Laundry", "category": "home", "selfHours": 2.5, "keywords": ["laundry", "clothes", "wash"] },
     { "id": "cleaning", "label": "Apartment cleaning", "category": "home", "selfHours": 3.0, "keywords": ["clean", "apartment", "room", "tidy"] },

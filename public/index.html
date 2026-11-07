@@ -192,7 +192,7 @@
       });
       const player = document.getElementById('landingPlayer');
       UI.coverflow(document.getElementById('landingFlow'), items, {
-        start: 1,
+        start: 0,
         render: (it) => `${UI.art(it.category)}<div class="cf-meta"><b>${it.label}</b><span>${it.count} providers</span><span class="bars"><i></i><i></i><i></i><i></i><i></i></span></div>`,
         onFocus: (it) => {
           UI.setPalette(it.category);

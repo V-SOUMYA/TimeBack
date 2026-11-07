@@ -7,12 +7,13 @@
   // Each category has an ombre palette. Setting it re-tints the page background
   // (CSS custom properties registered with @property animate smoothly).
   const PALETTES = {
+    grocery: ['#86bdf0', '#d4e9fc', '#2b5680'],
     food: ['#e2579b', '#f3a3c4', '#6d2a52'],
     home: ['#7fae8f', '#cfe4c9', '#2f5244'],
     errands: ['#ec8a4c', '#f7c79b', '#7a3a1c'],
     travel: ['#4b66e6', '#a6b6ff', '#22306e'],
     study: ['#9a78e6', '#d6c6ff', '#45307a'],
-    plan: ['#c86fa3', '#8fb39a', '#3b3550'],
+    plan: ['#86bdf0', '#cfe4c9', '#2b4766'],
     ready: ['#7fae8f', '#e6f26b', '#2f5244'],
     booked: ['#4b66e6', '#7fe0c3', '#22306e'],
   };
@@ -157,6 +158,7 @@
 
   // ---------------- category art for cards ----------------
   const ICONS = {
+    grocery: '<path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>',
     food: '<path d="M7 3v8a3 3 0 0 0 3 3v7M10 3v6M13 3v8a3 3 0 0 1-3 3M18 3c-2 2-2 6 0 8v10"/>',
     home: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
     errands: '<path d="M4 7h16l-1.5 12a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2L4 7zM9 7a3 3 0 0 1 6 0"/>',
